@@ -1,2 +1,4 @@
 src/**/*.ts
 tests/**/*.ts
+previous-files/**/*.ts
+interview-suite/**/*.ts
