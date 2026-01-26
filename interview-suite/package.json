@@ -1,0 +1,21 @@
+{
+  "name": "interview-suite",
+  "version": "1.0.0",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "bun test",
+    "grade": "bun run grade.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "@types/bun": "^1.3.6",
+    "@types/node": "^25.0.10",
+    "typescript": "^5.9.3"
+  }
+}
