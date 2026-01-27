@@ -1,3 +1,4 @@
+//@ts-nocheck
 /**
  * Interview Question: Deep Structure Flattener
  *
@@ -21,7 +22,21 @@
  * - Handle empty arrays and objects gracefully.
  */
 
-export const flatten = (value: any): any => {
-  // TODO: Implement flatten logic
-  throw new Error("Function not implemented.");
+const isPrimitive=(val:any)=>((typeof val !== "object") || val === null);
+
+export const flatten = <T extends any>(value:T[]) => {
+  if(isPrimitive(value)) return value;
+
+  if(Array.isArray(value)){
+    return value.reduce((acc, curr)=>(
+      acc.concat(flatten(curr))
+    ),[])
+  }
+
+  const result = {};
+  for (const [k,v] of Object.entries(value)){
+    result[k] = flatten(v);
+  }
+  return result;
+
 };

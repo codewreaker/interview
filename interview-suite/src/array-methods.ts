@@ -39,7 +39,7 @@ declare global {
 Array.prototype.myMap = function <T, U>(callback: (item: T, index: number, array: T[]) => U): U[] {
   const result: U[] = [];
   for (let i = 0; i < this.length; i++) {
-    result[i] = callback(this[i], i, this);
+    result[i] = callback(this[i], i, this)
   }
   return result;
 };
@@ -47,18 +47,21 @@ Array.prototype.myMap = function <T, U>(callback: (item: T, index: number, array
 Array.prototype.myFilter = function <T>(callback: (item: T, index: number, array: T[]) => boolean): T[] {
   const result: T[] = [];
   for (let i = 0; i < this.length; i++) {
-    const bool = callback(this[i], i, this);
-    if (bool) result.push(this[i])
+    if(callback(this[i], i, this)){
+      result.push(this[i])
+    }
   }
   return result;
 };
 
 Array.prototype.myReduce = function <T, U>(callback: (acc: U, curr: T, index: number, array: T[]) => U, initialValue?: U): U {
-  let accumulator = initialValue ?? this[0]
-  let i = (initialValue == null || initialValue === undefined) ? 1 : 0;
-  for (i; i < this.length; i++) {
-    accumulator = callback(accumulator, this[i], i, this);
+  let accumulator = initialValue ?? this[0];
+  const idx = ((initialValue === undefined || initialValue === null)) ? 1 : 0;
+
+  for (let i = idx; i < this.length; i++) {
+      accumulator = callback(accumulator, this[i], i, this);
   }
 
-  return accumulator
+  return accumulator;
+
 };

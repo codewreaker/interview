@@ -1,3 +1,5 @@
+//@ts-nocheck
+
 /**
  * Interview Question: Data Histogram Analysis (Bloomberg Style)
  *
@@ -33,6 +35,20 @@
  */
 
 export const histogram = (points: number[], boundaries: number[]): number[] => {
-  // TODO: Implement histogram logic
-  throw new Error("Function not implemented.");
+    const sPoints = [...points].toSorted((a,b)=>(a-b));
+    const bLen = boundaries.length - 1;
+    const results = (new Array(bLen)).fill(0);
+
+    for (const p of sPoints){
+      for (let i = 0;i<bLen;i++){
+        if(p >= boundaries[i] && p < boundaries[i+1]){
+          results[i]++;
+          break;
+        }
+      }
+    }
+
+    console.log(results)
+    return results;
+
 };
