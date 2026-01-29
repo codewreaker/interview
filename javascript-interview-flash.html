@@ -1,0 +1,189 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>JavaScript Interview Flash Sheet</title>
+<style>
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+    margin: 32px;
+    line-height: 1.35;
+    color: #111;
+  }
+  h1 {
+    font-size: 28px;
+    margin-bottom: 8px;
+  }
+  h2 {
+    font-size: 18px;
+    margin-top: 22px;
+    margin-bottom: 6px;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 4px;
+  }
+  .tagline {
+    color: #555;
+    margin-bottom: 24px;
+    font-size: 14px;
+  }
+  .desc {
+    font-size: 14px;
+    margin-bottom: 6px;
+  }
+  ul {
+    margin: 6px 0 8px 18px;
+    padding: 0;
+    font-size: 13px;
+  }
+  li {
+    margin-bottom: 4px;
+  }
+  pre {
+    background: #f6f8fa;
+    padding: 10px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    overflow-x: auto;
+    margin: 8px 0 14px 0;
+  }
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+  }
+  .note {
+    font-size: 12px;
+    color: #444;
+    margin-top: 4px;
+  }
+  @media print {
+    body {
+      margin: 20px;
+    }
+    h2 {
+      break-after: avoid;
+    }
+  }
+</style>
+</head>
+<body>
+
+<h1>JavaScript Interview Flash Sheet</h1>
+<div class="tagline">One‑glance reference • Frontend / Systems interviews (Meta, Citadel)</div>
+
+<div class="two-col">
+
+<div>
+<h2>Event Loop</h2>
+<div class="desc">
+Runtime model coordinating sync code, async tasks, and rendering.
+</div>
+<ul>
+  <li><strong>Order:</strong> Call Stack → Microtasks → Macrotask → Render</li>
+  <li><strong>Microtasks:</strong> Promise.then, queueMicrotask, MutationObserver</li>
+  <li><strong>Macrotasks:</strong> setTimeout, setInterval, MessageChannel</li>
+</ul>
+<pre>
+console.log(1);
+Promise.resolve().then(() => console.log(2));
+setTimeout(() => console.log(3));
+// 1, 2, 3
+</pre>
+
+<h2>Promises</h2>
+<div class="desc">Object representing eventual async result (microtask-based).</div>
+<ul>
+  <li>Promise.resolve → fulfilled promise</li>
+  <li>Promise.reject → rejected promise</li>
+  <li>Promise.all → wait all (fail fast)</li>
+  <li>Promise.allSettled → all outcomes</li>
+  <li>Promise.race → first settled</li>
+  <li>Promise.any → first fulfilled</li>
+</ul>
+<pre>
+Promise.all([p1, p2]).then(values => {});
+</pre>
+
+<h2>Closures & Scope</h2>
+<div class="desc">Function retains access to lexical scope.</div>
+<ul>
+  <li>Scopes: global, function, block</li>
+</ul>
+<pre>
+function counter() {
+  let n = 0;
+  return () => ++n;
+}
+</pre>
+
+<h2>Currying vs Closure vs Thunk</h2>
+<ul>
+  <li><strong>Closure:</strong> captures state</li>
+  <li><strong>Currying:</strong> multi‑arg → chained unary fns</li>
+  <li><strong>Thunk:</strong> defers execution</li>
+</ul>
+<pre>
+// Closure
+const addX = x => y => x + y;
+
+// Currying
+const add = x => y => z => x + y + z;
+
+// Thunk
+const thunk = () => expensive();
+</pre>
+</div>
+
+<div>
+<h2>`this`</h2>
+<div class="desc">Determined by invocation, not definition.</div>
+<ul>
+  <li>Function → dynamic this</li>
+  <li>Arrow → lexical this</li>
+</ul>
+<pre>
+function show() { return this.x; }
+
+show.call({ x: 1 });
+show.apply({ x: 2 });
+show.bind({ x: 3 })();
+</pre>
+
+<h2>call / apply / bind</h2>
+<ul>
+  <li>call(this, a, b)</li>
+  <li>apply(this, [a, b])</li>
+  <li>bind(this) → new fn</li>
+</ul>
+
+<h2>Prototypes / Classes</h2>
+<div class="desc">
+Prototype delegation model. Classes are syntax sugar over prototypes.
+</div>
+
+<h2>Equality</h2>
+<div class="desc">
+=== compares type + value. == allows coercion (avoid).
+</div>
+
+<h2>React Fiber</h2>
+<div class="desc">
+Incremental reconciliation engine.
+</div>
+<ul>
+  <li>Work split into units (fibers)</li>
+  <li>Interruptible & resumable</li>
+  <li>Priority‑based updates</li>
+  <li>Enables concurrent rendering</li>
+</ul>
+
+<div class="note">
+Interview trap: Fiber ≠ DOM diffing, it’s the scheduling layer.
+</div>
+</div>
+
+</div>
+
+</body>
+</html>

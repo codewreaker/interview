@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>JavaScript Interview Cheat Sheet</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
+    <style>
+        @page {
+            size: A4;
+            margin: 0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #ffffff;
+            color: #1a1a1a;
+            font-size: 16px;
+            line-height: 1.6;
+            padding: 32px 40px;
+        }
+
+        /* Page structure */
+        .page {
+            page-break-after: always;
+            max-width: 210mm;
+            margin: 0 auto;
+        }
+
+        .page:last-child {
+            page-break-after: avoid;
+        }
+
+        /* Header - only on first page */
+        .header {
+            margin-bottom: 18px;
+            padding-bottom: 4px;
+            border-bottom: 3px solid #e65c00;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 4px;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 16px;
+        }
+
+        /* Section headers */
+        h2 {
+            font-size: 20px;
+            font-weight: 700;
+            color: #e65c00;
+            margin: 20px 0 10px 0;
+            padding-bottom: 4px;
+            border-bottom: 2px solid #f0f0f0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        h2:first-of-type {
+            margin-top: 0;
+        }
+
+        h3 {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+            margin: 14px 0 8px 0;
+        }
+
+        /* Accent text */
+        .accent {
+            color: #e65c00;
+        }
+
+        /* Paragraphs */
+        p {
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        /* Lists */
+        ul {
+            margin: 8px 0 12px 20px;
+        }
+
+        li {
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        li strong {
+            color: #1a1a1a;
+        }
+
+        /* Inline code */
+        code {
+            font-family: 'JetBrains Mono', 'SF Mono', monospace;
+            background: #f5f5f5;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 14px;
+            color: #d63384;
+        }
+
+        /* Code blocks with syntax highlighting */
+        pre {
+            font-family: 'JetBrains Mono', 'SF Mono', monospace;
+            background: #1e1e1e;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            line-height: 1.5;
+            overflow-x: auto;
+            margin: 10px 0 14px 0;
+            border-left: 3px solid #e65c00;
+        }
+
+        pre code {
+            background: none;
+            padding: 0;
+            color: #d4d4d4;
+        }
+
+        /* Syntax colors */
+        .kw {
+            color: #c586c0;
+        }
+
+        /* keywords: const, let, function, return */
+        .fn {
+            color: #dcdcaa;
+        }
+
+        /* function names */
+        .str {
+            color: #ce9178;
+        }
+
+        /* strings */
+        .num {
+            color: #b5cea8;
+        }
+
+        /* numbers */
+        .cm {
+            color: #6a9955;
+        }
+
+        /* comments */
+        .op {
+            color: #d4d4d4;
+        }
+
+        /* operators */
+        .pr {
+            color: #9cdcfe;
+        }
+
+        /* properties/variables */
+        .obj {
+            color: #4ec9b0;
+        }
+
+        /* objects/classes */
+
+        /* Two column layout */
+        .two-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+
+        /* Three column layout */
+        .three-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 16px;
+        }
+
+        /* Info boxes */
+        .info-box {
+            background: #fff8f3;
+            border-left: 3px solid #e65c00;
+            padding: 10px 14px;
+            margin: 10px 0;
+            border-radius: 0 6px 6px 0;
+        }
+
+        .info-box p {
+            margin: 0;
+            font-size: 16px;
+        }
+
+        /* Key point */
+        .key {
+            background: #f8f8f8;
+            border: 1px solid #e0e0e0;
+            padding: 10px 14px;
+            border-radius: 6px;
+            margin: 10px 0;
+        }
+
+        /* Flow diagram */
+        .flow {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin: 16px 0;
+            flex-wrap: wrap;
+        }
+
+        .flow-box {
+            background: #f5f5f5;
+            border: 2px solid #e0e0e0;
+            padding: 10px 16px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .flow-box.accent {
+            background: #fff3eb;
+            border-color: #e65c00;
+            color: #e65c00;
+        }
+
+        .flow-arrow {
+            color: #999;
+            font-size: 18px;
+        }
+
+        /* Table */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 10px 0;
+            font-size: 16px;
+        }
+
+        th,
+        td {
+            padding: 8px 12px;
+            text-align: left;
+            border: 1px solid #e0e0e0;
+        }
+
+        th {
+            background: #f8f8f8;
+            font-weight: 600;
+            color: #333;
+        }
+
+        /* Image */
+        .img-center {
+            text-align: center;
+            margin: 12px 0;
+        }
+
+        .img-center img {
+            max-width: 100%;
+            max-height: 200px;
+            border-radius: 6px;
+            border: 1px solid #e0e0e0;
+        }
+
+        /* Divider */
+        hr {
+            border: none;
+            border-top: 1px solid #e0e0e0;
+            margin: 20px 0;
+        }
+
+        /* Tags */
+        .tag {
+            display: inline-block;
+            background: #f5f5f5;
+            border: 1px solid #e0e0e0;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 14px;
+            color: #666;
+            margin-right: 6px;
+        }
+
+        .tag.accent {
+            background: #fff3eb;
+            border-color: #e65c00;
+            color: #e65c00;
+        }
+
+        /* Compact section */
+        .compact p {
+            margin-bottom: 6px;
+        }
+
+        .compact pre {
+            margin: 6px 0 10px 0;
+        }
+
+        @media print {
+            body {
+                padding: 24px 32px;
+            }
+
+            .page {
+                page-break-after: always;
+            }
+
+            pre,
+            .info-box,
+            .key {
+                break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ==================== PAGE 1 ==================== -->
+    <div class="page">
+
+        <div class="header">
+            <h1>JavaScript <span class="accent">Interview</span> Cheat Sheet (Page 1)</h1>
+        </div>
+
+        <h2>The Event Loop</h2>
+
+        <p><strong>JavaScript is single-threaded</strong> but achieves concurrency through the Event Loop. The browser
+            provides Web APIs (setTimeout, fetch, DOM events) that run separately. When async operations complete, their
+            callbacks are queued.</p>
+
+        <div class="flow">
+            <div class="flow-box">Call Stack</div>
+            <span class="flow-arrow">→</span>
+            <div class="flow-box accent">All Microtasks</div>
+            <span class="flow-arrow">→</span>
+            <div class="flow-box">Render</div>
+            <span class="flow-arrow">→</span>
+            <div class="flow-box">One Macrotask</div>
+            <span class="flow-arrow">→</span>
+            <span style="color:#999; font-size:16px;">repeat</span>
+        </div>
+
+        <div class="two-col">
+            <div>
+                <ul>
+                    <li><strong>Microtasks</strong> (High Priority) — <code>Promise.then</code>,
+                        <code>queueMicrotask</code>, <code>MutationObserver</code>. All drain before next macrotask.
+                    </li>
+                    <li><strong>Macrotasks</strong> (Lower Priority) — <code>setTimeout</code>,
+                        <code>setInterval</code>, I/O, UI events.
+                    </li>
+                </ul>
+                <div class="info-box">
+                    <p><strong>⚠️ Key:</strong> Microtasks completely drain before any macrotask. Infinite microtask
+                        loop blocks rendering!</p>
+                </div>
+            </div>
+            <div>
+                <div class="img-center">
+                    <img src="https://namaste-javascript-handbook.vercel.app/assets/images/microtask6-5d251829eb7a4b403f6910fed70828f6.gif"
+                        alt="Event Loop">
+                </div>
+            </div>
+        </div>
+
+        <pre><code><span class="fn">console</span>.<span class="fn">log</span>(<span class="str">'1: sync'</span>);
+<span class="fn">setTimeout</span>(() => <span class="fn">console</span>.<span class="fn">log</span>(<span class="str">'2: macrotask'</span>), <span class="num">0</span>);
+<span class="obj">Promise</span>.<span class="fn">resolve</span>().<span class="fn">then</span>(() => <span class="fn">console</span>.<span class="fn">log</span>(<span class="str">'3: microtask'</span>));
+<span class="fn">console</span>.<span class="fn">log</span>(<span class="str">'4: sync'</span>);
+<span class="cm">// Output: 1: sync → 4: sync → 3: microtask → 2: macrotask</span></code></pre>
+
+        <hr>
+
+        <h2>Promises</h2>
+
+        <p>A <strong>Promise</strong> represents a future value. States: <code>pending</code> → <code>fulfilled</code>
+            or <code>rejected</code>. Once settled, immutable.</p>
+
+        <table>
+            <tr>
+                <th>Method</th>
+                <th>Behavior</th>
+            </tr>
+            <tr>
+                <td><code>Promise.all</code></td>
+                <td>All must resolve; fails fast on first rejection</td>
+            </tr>
+            <tr>
+                <td><code>Promise.allSettled</code></td>
+                <td>Waits for all; returns all outcomes</td>
+            </tr>
+            <tr>
+                <td><code>Promise.race</code></td>
+                <td>First to settle (resolve OR reject)</td>
+            </tr>
+            <tr>
+                <td><code>Promise.any</code></td>
+                <td>First to resolve; AggregateError if all reject</td>
+            </tr>
+        </table>
+
+    </div>
+
+    <!-- ==================== PAGE 2 ==================== -->
+    <div class="page">
+        <div class="header">
+            <h1>JavaScript <span class="accent">Interview</span> Cheat Sheet (Page 2)</h1>
+        </div>
+        <h2>Closures & Scope</h2>
+
+        <p>A <strong>closure</strong> is a function bundled with its lexical environment—it "remembers" variables from
+            the outer scope even after that function returns.</p>
+
+        <div class="two-col">
+            <div>
+                <ul>
+                    <li><strong>Global</strong> — Accessible everywhere</li>
+                    <li><strong>Function</strong> — <code>var</code> is function-scoped</li>
+                    <li><strong>Block</strong> — <code>let</code>/<code>const</code> are block-scoped <code>{ }</code>
+                    </li>
+                    <li><strong>Lexical</strong> — Scope determined at write-time</li>
+                </ul>
+            </div>
+            <div>
+                <pre><code><span class="kw">function</span> <span class="fn">createCounter</span>() {
+  <span class="kw">let</span> <span class="pr">count</span> = <span class="num">0</span>; <span class="cm">// private!</span>
+  <span class="kw">return</span> {
+    <span class="fn">increment</span>: () => ++<span class="pr">count</span>,
+    <span class="fn">get</span>: () => <span class="pr">count</span>
+  };
+}</code></pre>
+            </div>
+        </div>
+
+        <div class="info-box">
+            <p><strong>⚠️ Trap:</strong> <code>var</code> in loops shares binding across iterations; <code>let</code>
+                creates new binding per iteration.</p>
+        </div>
+
+        <hr>
+
+        <h2>The <code>this</code> Keyword</h2>
+
+        <p><strong>Arrow functions</strong> inherit <code>this</code> from parent scope (lexical). <strong>Regular
+                functions</strong> get <code>this</code> based on how they're called.</p>
+
+        <div class="two-col">
+            <div>
+                <h3>call / apply / bind <strong>C</strong>all=<strong>C</strong>ommas, <strong>A</strong>pply =
+                    <strong>A</strong>rray</p>
+                </h3>
+                <ul>
+                    <li><code>call(ctx, a, b)</code> — Invoke immediately, comma args</li>
+                    <li><code>apply(ctx, [a, b])</code> — Invoke immediately, array args</li>
+                    <li><code>bind(ctx)</code> — Returns new function with bound <code>this</code></li>
+                </ul>
+            </div>
+            <div>
+                <pre><code><span class="kw">const</span> <span class="pr">obj</span> = { <span class="pr">x</span>: <span class="num">10</span> };
+
+<span class="cm">// Regular function: this = caller</span>
+<span class="kw">function</span> <span class="fn">regular</span>() { <span class="kw">return</span> <span class="kw">this</span>.<span class="pr">x</span>; }
+<span class="pr">regular</span>.<span class="fn">call</span>(<span class="pr">obj</span>); <span class="cm">// 10</span>
+
+<span class="cm">// Arrow function: this = parent scope</span>
+<span class="kw">const</span> <span class="fn">arrow</span> = () => <span class="kw">this</span>.<span class="pr">x</span>;
+<span class="pr">arrow</span>.<span class="fn">call</span>(<span class="pr">obj</span>); <span class="cm">// undefined (can't rebind!)</span></code></pre>
+            </div>
+        </div>
+
+        <h2>Prototypes & Classes</h2>
+
+        <p>JavaScript uses <strong>prototypal inheritance</strong>—objects link via <code>[[Prototype]]</code> chain. <code>Object.create(proto)</code> creates objects with specified prototype. <code>class</code> is syntactic sugar over prototypes; use <code>extends</code> + <code>super()</code> for inheritance.</p>
+
+        <div class="info-box">
+            <p><strong>Key:</strong> <code>__proto__</code> = object's prototype link. <code>.prototype</code> = property on constructor functions that instances inherit from.</p>
+        </div>
+
+
+    </div>
+
+    <!-- ==================== PAGE 3 ==================== -->
+    <div class="page">
+        <br />
+        <div class="header">
+            <h1>JavaScript <span class="accent">Interview</span> Cheat Sheet (Page 3)</h1>
+        </div>
+        <h2>Equality</h2>
+        <p><strong>Always use <code>===</code></strong> (strict equality—compares type AND value). Avoid <code>==</code>
+            (loose—coerces types, e.g., <code>'5' == 5</code> is true). Note: <code>NaN === NaN</code> is
+            <code>false</code>; use <code>Number.isNaN()</code>.
+        </p>
+
+        <h2>React: Virtual DOM & Fiber</h2>
+
+        <div class="two-col">
+            <div>
+                <h3>Virtual DOM</h3>
+                <p>A lightweight JavaScript representation of the actual DOM. React keeps two virtual trees in memory:
+                </p>
+                <ul>
+                    <li><strong>Current tree</strong> — What's rendered on screen</li>
+                    <li><strong>Work-in-progress tree</strong> — The next state being computed</li>
+                </ul>
+                <p>When state changes, React creates a new virtual tree, <strong>diffs</strong> it against the current
+                    tree, and calculates the minimal set of real DOM updates needed.</p>
+                <div class="info-box">
+                    <p><strong>Why?</strong> DOM operations are expensive. Batching changes and computing diffs in JS is
+                        much faster than touching the DOM repeatedly.</p>
+                </div>
+            </div>
+            <div>
+                <h3>React Fiber</h3>
+                <p>Fiber is the <strong>reconciliation engine</strong> (React 16+). It's not the Virtual DOM—it's how
+                    React <em>schedules</em> the work of comparing and updating trees.</p>
+                <ul>
+                    <li><strong>Incremental rendering</strong> — Work is split into units called "fibers"</li>
+                    <li><strong>Interruptible</strong> — Can pause, abort, or resume work</li>
+                    <li><strong>Priority-based</strong> — User interactions get higher priority than data fetching</li>
+                    <li><strong>Concurrent Mode</strong> — Prepare multiple versions of UI simultaneously</li>
+                </ul>
+                <div class="key">
+                    <p style="margin:0;"><strong>Interview point:</strong> Virtual DOM = the
+                        <em>what</em> (data structure). Fiber = the <em>how</em> (scheduling algorithm).
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <hr>
+
+        <h2>Array Quick Reference</h2>
+
+        <div class="three-col compact">
+            <div>
+                <h3>reduce()</h3>
+                <p>Accumulate array to single value:</p>
+                <pre><code><span class="kw">const</span> <span class="pr">sum</span> = [<span class="num">1</span>,<span class="num">2</span>,<span class="num">3</span>].<span class="fn">reduce</span>(
+  (<span class="pr">acc</span>, <span class="pr">n</span>) => <span class="pr">acc</span> + <span class="pr">n</span>, <span class="num">0</span>
+); <span class="cm">// 6</span></code></pre>
+            </div>
+            <div>
+                <h3>splice() <span class="tag accent">mutates</span></h3>
+                <p>Insert/remove at index:</p>
+                <pre><code><span class="kw">const</span> <span class="pr">arr</span> = [<span class="str">'a'</span>,<span class="str">'b'</span>,<span class="str">'c'</span>];
+<span class="pr">arr</span>.<span class="fn">splice</span>(<span class="num">1</span>, <span class="num">1</span>, <span class="str">'x'</span>);
+<span class="cm">// arr = ['a','x','c']</span></code></pre>
+            </div>
+            <div>
+                <h3>slice() <span class="tag">no mutation</span></h3>
+                <p>Copy portion of array:</p>
+                <pre><code><span class="kw">const</span> <span class="pr">arr</span> = [<span class="num">0</span>,<span class="num">1</span>,<span class="num">2</span>,<span class="num">3</span>];
+<span class="pr">arr</span>.<span class="fn">slice</span>(<span class="num">1</span>, <span class="num">3</span>); <span class="cm">// [1,2]</span>
+<span class="pr">arr</span>.<span class="fn">slice</span>(-<span class="num">2</span>);   <span class="cm">// [2,3]</span></code></pre>
+            </div>
+        </div>
+
+
+    </div>
+
+    <!-- ==================== PAGE 4 ==================== -->
+    <div class="page">
+        <div class="header">
+            <h1>JavaScript <span class="accent">Interview</span> Cheat Sheet (Page 4)</h1>
+        </div>
+        <h2>Object Quick Reference</h2>
+
+        <div class="two-col">
+            <div>
+                <h3>Object.freeze()</h3>
+                <p>Makes object <strong>completely immutable</strong>—can't add, remove, or modify properties. Use
+                    <code>Object.isFrozen()</code> to check.
+                </p>
+            </div>
+            <div>
+                <h3>Object.seal()</h3>
+                <p>Prevents adding/removing properties, but <strong>can still modify</strong> existing values. Use
+                    <code>Object.isSealed()</code> to check.
+                </p>
+            </div>
+        </div>
+
+        <div class="info-box">
+            <p><strong>Key difference:</strong> freeze = fully immutable. seal = can modify existing values. Both are
+                <strong>shallow</strong>—nested objects aren't affected.
+            </p>
+        </div>
+
+        <hr>
+
+        <h2>Currying & Thunks</h2>
+
+        <div class="two-col compact">
+            <div>
+                <h3>Currying</h3>
+                <p>Transform <code>f(a, b, c)</code> into <code>f(a)(b)(c)</code>. Enables partial application:</p>
+                <pre><code><span class="kw">const</span> <span class="fn">add</span> = <span class="pr">a</span> => <span class="pr">b</span> => <span class="pr">a</span> + <span class="pr">b</span>;
+
+<span class="fn">add</span>(<span class="num">5</span>)(<span class="num">3</span>);        <span class="cm">// 8</span>
+
+<span class="kw">const</span> <span class="fn">add5</span> = <span class="fn">add</span>(<span class="num">5</span>); <span class="cm">// partial</span>
+<span class="fn">add5</span>(<span class="num">10</span>);          <span class="cm">// 15</span></code></pre>
+            </div>
+            <div>
+                <h3>Thunks</h3>
+                <p>A function wrapping computation to delay execution:</p>
+                <pre><code><span class="cm">// Immediate (eager)</span>
+<span class="kw">const</span> <span class="pr">result</span> = <span class="fn">heavyCalc</span>();
+
+<span class="cm">// Thunk (lazy)</span>
+<span class="kw">const</span> <span class="fn">thunk</span> = () => <span class="fn">heavyCalc</span>();
+<span class="cm">// Execute only when needed:</span>
+<span class="fn">thunk</span>();</code></pre>
+            </div>
+        </div>
+
+        <hr>
+
+        <h2>Performance Patterns</h2>
+
+        <div class="two-col compact">
+            <div>
+                <h3>Debounce</h3>
+                <p>Delay execution e.g (search input):</p>
+                <pre><code><span class="kw">const</span> <span class="fn">debounce</span> = (<span class="pr">fn</span>, <span class="pr">ms</span>) => {
+  <span class="kw">let</span> <span class="pr">timer</span>;
+  <span class="kw">return</span> (...<span class="pr">args</span>) => {
+    <span class="fn">clearTimeout</span>(<span class="pr">timer</span>);
+    <span class="pr">timer</span> = <span class="fn">setTimeout</span>(
+      () => <span class="fn">fn</span>(...<span class="pr">args</span>), 
+      <span class="pr">ms</span>
+    );
+  };
+};</code></pre>
+            </div>
+            <div>
+                <h3>Throttle</h3>
+                <p>Max one call per interval (scroll/resize):</p>
+                <pre><code><span class="kw">const</span> <span class="fn">throttle</span> = (<span class="pr">fn</span>, <span class="pr">ms</span>) => {
+  <span class="kw">let</span> <span class="pr">wait</span> = <span class="kw">false</span>;
+  <span class="kw">return</span> (...<span class="pr">args</span>) => {
+    <span class="kw">if</span> (<span class="pr">wait</span>) <span class="kw">return</span>;
+    <span class="fn">fn</span>(...<span class="pr">args</span>);
+    <span class="pr">wait</span> = <span class="kw">true</span>;
+    <span class="fn">setTimeout</span>(() => 
+      <span class="pr">wait</span> = <span class="kw">false</span>, <span class="pr">ms</span>);
+  };
+};</code></pre>
+            </div>
+        </div>
+
+        <hr>
+
+        <h2>Classic Interview Questions</h2>
+
+        <div class="two-col compact">
+            <div>
+                <pre><code><span class="cm">// Q1: What's logged?</span>
+<span class="kw">for</span> (<span class="kw">var</span> <span class="pr">i</span> = <span class="num">0</span>; <span class="pr">i</span> < <span class="num">3</span>; <span class="pr">i</span>++) {
+  <span class="fn">setTimeout</span>(() => <span class="fn">console</span>.<span class="fn">log</span>(<span class="pr">i</span>), <span class="num">0</span>);
+}
+<span class="cm">// Answer: 3, 3, 3</span>
+<span class="cm">// Why: var is function-scoped</span>
+<span class="cm">// Fix: use let</span></code></pre>
+            </div>
+            <div>
+                <pre><code><span class="cm">// Q2: typeof null?</span>
+<span class="kw">typeof</span> <span class="kw">null</span>  <span class="cm">// "object" (historic bug!)</span>
+
+<span class="cm">// Q3: Floating point</span>
+<span class="num">0.1</span> + <span class="num">0.2</span> === <span class="num">0.3</span>  <span class="cm">// false</span>
+
+<span class="cm">// Q4: Array comparison</span>
+[] == []   <span class="cm">// false (different refs)</span>
+[] === []  <span class="cm">// false</span></code></pre>
+            </div>
+        </div>
+
+        <hr>
+
+        <div class="two-col compact" style="margin-top: 16px;">
+            <div>
+                <h3>.at() <span class="tag">ES2022</span></h3>
+                <p>Access elements with negative indices:</p>
+                <pre><code><span class="kw">const</span> <span class="pr">arr</span> = [<span class="str">'a'</span>, <span class="str">'b'</span>, <span class="str">'c'</span>, <span class="str">'d'</span>];
+
+<span class="pr">arr</span>.<span class="fn">at</span>(<span class="num">0</span>);   <span class="cm">// 'a'</span>
+<span class="pr">arr</span>.<span class="fn">at</span>(-<span class="num">1</span>);  <span class="cm">// 'd' (last item!)</span>
+<span class="pr">arr</span>.<span class="fn">at</span>(-<span class="num">2</span>);  <span class="cm">// 'c'</span>
+
+<span class="cm">// vs old way:</span>
+<span class="pr">arr</span>[<span class="pr">arr</span>.<span class="pr">length</span> - <span class="num">1</span>]; <span class="cm">// 'd'</span></code></pre>
+            </div>
+            <div>
+                <h3>structuredClone() <span class="tag">ES2022</span></h3>
+                <p>Deep clone objects (handles circular refs, Dates, etc.):</p>
+                <pre><code><span class="kw">const</span> <span class="pr">original</span> = {
+  <span class="pr">date</span>: <span class="kw">new</span> <span class="obj">Date</span>(),
+  <span class="pr">nested</span>: { <span class="pr">arr</span>: [<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>] }
+};
+
+<span class="kw">const</span> <span class="pr">clone</span> = <span class="fn">structuredClone</span>(<span class="pr">original</span>);
+<span class="pr">clone</span>.<span class="pr">nested</span>.<span class="pr">arr</span>.<span class="fn">push</span>(<span class="num">4</span>);
+
+<span class="cm">// original.nested.arr is still [1, 2, 3]</span></code></pre>
+            </div>
+        </div>
+
+        <h2>Quick Answers</h2>
+
+        <ul>
+            <li><strong>Event Loop?</strong> → JS achieves concurrency via callback queues (micro/macro) processed by a
+                single thread.</li>
+            <li><strong>Closures?</strong> → A function bundled with references to its surrounding lexical scope.</li>
+            <li><strong>var vs let vs const?</strong> → <code>var</code> = function-scoped, hoisted as undefined.
+                <code>let</code>/<code>const</code> = block-scoped, TDZ.
+            </li>
+            <li><strong>Prototypal inheritance?</strong> → Objects delegate property access up a prototype chain until
+                found or null.</li>
+            <li><strong>Promise vs callback?</strong> → Chainable, composable (<code>.all</code>/<code>.race</code>),
+                built-in error handling, avoids callback hell.</li>
+            <li><strong>Virtual DOM vs Fiber?</strong> → VDOM is the data structure (what). Fiber is the scheduling
+                algorithm (how).</li>
+        </ul>
+
+    </div>
+
+</body>
+
+</html>

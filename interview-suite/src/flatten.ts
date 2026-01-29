@@ -22,21 +22,8 @@
  * - Handle empty arrays and objects gracefully.
  */
 
-const isPrimitive=(val:any)=>((typeof val !== "object") || val === null);
 
 export const flatten = <T extends any>(value:T[]) => {
-  if(isPrimitive(value)) return value;
 
-  if(Array.isArray(value)){
-    return value.reduce((acc, curr)=>(
-      acc.concat(flatten(curr))
-    ),[])
-  }
-
-  const result = {};
-  for (const [k,v] of Object.entries(value)){
-    result[k] = flatten(v);
-  }
-  return result;
 
 };

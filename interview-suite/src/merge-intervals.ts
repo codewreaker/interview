@@ -1,10 +1,6 @@
 /**
  * Interview Question: Merge and Sort Intervals
  *
- * Context:
- * Interval merging is a classic algorithmic problem frequently encountered in calendar scheduling,
- * resource allocation, and time-range consolidation tasks.
- *
  * Objective:
  * Given an array of intervals where each interval is represented as [startTime, endTime],
  * merge all overlapping intervals and return a sorted array of non-overlapping intervals.
@@ -16,7 +12,7 @@
  *
  * Requirements:
  * 1. Sort the intervals by their start time.
- * 2. Merge overlapping intervals (two intervals overlap if the start of one is <= the end of previous).
+ * 2. Merge overlapping intervals (two intervals overlap if the start of one is <= the end of previous when sorted).
  * 3. Return a new array of merged, non-overlapping intervals sorted by start time.
  * 4. Do not mutate the original array.
  *
@@ -41,5 +37,5 @@
 export type Interval = [number, number];
 
 export const mergeIntervals = (intervals: Interval[]): Interval[] => {
-
+ 
 };
