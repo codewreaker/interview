@@ -65,4 +65,22 @@ describe("Flatten", () => {
       const expected = [1, 2, 3, 4];
       expect(flatten(input)).toEqual(expected);
   });
+
+  test("nested empty objects are removed", () => {
+      const input = { a: {}, b: {} };
+      const expected = {};
+      expect(flatten(input)).toEqual(expected);
+  });
+
+  test("nested objects are flattened", () => {
+      const input = { a: 1, b: { c: 2, d: 3 } };
+      const expected = { a: 1, c: 2, d: 3 };
+      expect(flatten(input)).toEqual(expected);
+  });
+
+  test("nested arrays and objects together", () => {
+      const input = { a: [1, [2]], b: { c: [3, [4]], d: 5 } };
+      const expected = { a: [1, 2], c: [3, 4], d: 5 };
+      expect(flatten(input)).toEqual(expected);
+  });
 });

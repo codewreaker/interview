@@ -70,9 +70,9 @@ export function debounce<T extends AnyFunction>(
     delay: number,
     immediate: boolean = false
 ): (...args: Parameters<T>) => void {
-    let timeoutId: number = null;
-    return function (...args) {
-        clearTimeout(timeoutId);
+    let timeoutId: number | null = null;
+    return function (this:any, ...args) {
+        clearTimeout(timeoutId as number);
 
         if (immediate && (timeoutId == null)) {
             callback.call(this, ...args)
