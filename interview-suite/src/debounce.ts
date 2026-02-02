@@ -70,20 +70,21 @@ export function debounce<T extends AnyFunction>(
     delay: number,
     immediate: boolean = false
 ): (...args: Parameters<T>) => void {
-    let timeoutId: number | null = null;
-    return function (this:any, ...args) {
-        clearTimeout(timeoutId as number);
+    let timeoutId: ReturnType<typeof setTimeout> | null = null;
 
-        if (immediate && (timeoutId == null)) {
-            callback.call(this, ...args)
+    return function(this:any, ...args: Parameters<T>){
+        const shouldCallImmediate = Boolean(immediate && timeoutId === null);
+        if(timeoutId) clearTimeout(timeoutId);
+
+        timeoutId = setTimeout(()=>{
+            if(!immediate){callback.apply(this, args)};
+            timeoutId = null
+        },delay)
+
+        if(shouldCallImmediate){
+            callback.apply(this, args);
         }
 
-        timeoutId = setTimeout(() => {
-            if (!immediate) {
-                callback.call(this, ...args);
-            }
-            timeoutId = null
-        }, delay)
     }
 }
 

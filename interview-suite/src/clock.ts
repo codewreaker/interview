@@ -11,22 +11,21 @@
  * const cleanup = initClock((time) => console.log(time));
  * cleanup(); // stops the clock
  */
-
+const formatTime = (now: Date) => {
+    const hour = String(now.getHours()).padStart(2, "0");
+    const min = String(now.getMinutes()).padStart(2, "0");
+    const secs = String(now.getSeconds()).padStart(2, "0");
+    return `${hour}:${min}:${secs}`;
+}
 export const initClock = (onTick: (time: string) => void = console.log): () => void => {
-    const tick = (now: Date) => {
-        const hours = String(now.getHours()).padStart(2, "0");
-        const min = String(now.getMinutes()).padStart(2, "0");
-        const secs = String(now.getSeconds()).padStart(2, "0");
-        return `${hours}:${min}:${secs}`
+    const tick=(now: Date)=>{
+        onTick(formatTime(now))
     }
 
-    onTick(tick(new Date()));
+    tick(new Date()); // to immediately show time once it starts
+    const intervalId = setInterval(()=>(tick(new Date())),1000);
 
-    const intervalId = setInterval(() => {
-        onTick(tick(new Date()))
-    }, 1000);
-
-    return () => {
+    return ()=>{
         clearInterval(intervalId)
     }
 };

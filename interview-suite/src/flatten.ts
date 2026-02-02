@@ -1,4 +1,3 @@
-//@ts-nocheck
 /**
  * Interview Question: Deep Structure Flattener
  *
@@ -22,27 +21,26 @@
  * - Handle empty arrays and objects gracefully.
  */
 
-const isPrimitive = (val: any): boolean => (typeof val !== "object" || val === null);
-const isObject = (val: any):boolean => !(isPrimitive(val) || Array.isArray(val))
+const isPrimitive =(val:any)=>(typeof val !== "object" || val === null);
+const isTrueObject=(val:any)=>(!(isPrimitive(val) || Array.isArray(val)));
 
-export const flatten = <T extends any>(value: T[]) => {
-  if (isPrimitive(value)) return value;
+export const flatten = (value: any): any => {
+  if(isPrimitive(value)) return value;
 
-  if (Array.isArray(value)) {
-    return value.reduce((acc, curr) => {
-      return acc.concat(flatten(curr))
-    }, [])
+  if(Array.isArray(value)){
+    return value.reduce((acc: any[], curr)=>(acc.concat(flatten(curr))),[]);
   }
 
-  const results = {};
-  for (const [k, v] of Object.entries(value)) {
-    const flattened = flatten(v);
-    if (isObject(v)) {
-      Object.assign(results, flattened)
+  let result: Record<string, any> = {};
+  for (const [k,v] of Object.entries(value)){
+    const flattened = flatten(v as any);
+    if(isTrueObject(flattened)){
+      Object.assign(result, flattened)
     }else{
-      results[k] = flattened
+      result[k] = flattened;
     }
   }
-  return results;
+
+  return result;
 
 };

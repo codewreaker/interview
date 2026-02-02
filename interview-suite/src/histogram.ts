@@ -33,18 +33,16 @@
  */
 
 export const histogram = (points: number[], boundaries: number[]): number[] => {
-  const sPoints = points.toSorted((a,b)=>(a-b));
+  const sPoints = structuredClone(points).toSorted((a,b)=>(a-b));
   const len = boundaries.length - 1;
-  const output = (new Array(len)).fill(0);
-
+  const results = (new Array(len)).fill(0);
   for (const p of sPoints){
-    for(let i=0;i<len;i++){
+    for (let i=0;i<len;i++){
       if(p>=boundaries[i] && p<boundaries[i+1]){
-        output[i]++;
-        break
+        results[i]++
+        break;
       }
     }
   }
-  return output;
-
+  return results
 };

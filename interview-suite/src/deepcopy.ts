@@ -24,18 +24,19 @@
  *   unless you wish to challenge yourself further.
  */
 
-const isPrimitive =(val:any)=>(typeof val !== "object" || val === null);
+const isPrimitive = (val: any) => (typeof val !== "object" || val === null);
 
 export const deepcopy = <T>(value: T): T | T[] => {
-  if(isPrimitive(value)) return value;
-  
-  if (Array.isArray(value)){
-    return value.map(deepcopy)
+  if (!value || isPrimitive(value)) return value;
+
+  if (Array.isArray(value)) {
+    return value.map(deepcopy);
   }
 
-  const result:Record<string, T|T[]> = {};
-  for (const [k,v] of Object.entries(value as T[])){
-    result[k] = deepcopy(v)
+  const result:Record<string, any> = {};
+  for (const [k, v] of Object.entries(value)) {
+    result[k] = deepcopy(v) as T | T []
   }
-  return result as T
+  return result as T;
+
 };
