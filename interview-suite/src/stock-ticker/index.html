@@ -93,11 +93,15 @@
     /* Stock styling */
     .ticker { font-weight: 700; color: #00d4ff; font-family: 'Fira Code', monospace; }
     .price { font-family: 'Fira Code', monospace; font-weight: 600; }
+    .price::before { content: '$'; }
     .price-up { color: #00ff88; }
     .price-down { color: #ff4757; }
     .change { font-family: 'Fira Code', monospace; padding: 4px 8px; border-radius: 4px; }
     .change.positive { background: rgba(0, 255, 136, 0.2); color: #00ff88; }
     .change.negative { background: rgba(255, 71, 87, 0.2); color: #ff4757; }
+    .changePercent::after { content: "%";}
+    .changePercent.positive {  color: #00ff88; }
+    .changePercent.negative { color: #ff4757; }
     .timestamp { font-family: 'Fira Code', monospace; color: #888; font-size: 0.85rem; }
 
     /* Animation */

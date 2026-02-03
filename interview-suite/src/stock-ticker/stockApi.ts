@@ -69,11 +69,11 @@ export function subscribeAllStocks(callback: (data: StockData) => void): () => v
  *   console.log(stockData);
  * });
  */
-export function subscribeStock(ticker: string, callback: (data: StockData) => void): () => void {
+export function subscribeStock(ticker: string, callback: (data: StockData) => void, onError:(error:Error)=>void): () => void {
   const stock = MOCK_STOCKS.find(s => s.ticker === ticker.toUpperCase());
   
   if (!stock) {
-    console.error(`Stock ${ticker} not found. Available: ${MOCK_STOCKS.map(s => s.ticker).join(', ')}`);
+    onError?.(new Error(`Stock ${ticker} not found. Available: ${MOCK_STOCKS.map(s => s.ticker).join(', ')}`));
     return () => {};
   }
 
