@@ -24,11 +24,26 @@ import { Grid, SortConfig } from './grid';
 // Use Map ref for O(1) mutations - not in state to avoid copying
 const tickerMap: Map<string, StockData> = new Map();
 
-const newDirection=( prev:SortConfig)=>{
-    if(prev.direction === 'desc') return 'none';
-    if(prev.direction === 'asc') return 'desc';
-    if(prev.direction === 'none') return 'asc'
-    return newDirection(prev)
+const newDirection = (prev: SortConfig): 'asc' | 'desc' | 'none' => {
+    if (prev.direction === 'desc') return 'none';
+    if (prev.direction === 'asc') return 'desc';
+    return 'asc'; // 'none' -> 'asc'
+}
+
+const sortData = (unsortedData: StockData[], sortConfig: SortConfig) => {
+    const modifier = sortConfig.direction === 'desc' ? -1 : 1;
+    const key = sortConfig.column;
+
+    return unsortedData.toSorted((a, b) => {
+        const aVal = a[key];
+        const bVal = b[key];
+
+        if (typeof aVal === 'string') {
+            return modifier * aVal.localeCompare(bVal as string);
+        }
+
+        return modifier * ((aVal as number) - (bVal as number));
+    });
 }
 
 function App() {
@@ -61,9 +76,9 @@ function App() {
     }
 
     const columnClicked = (col: keyof StockData) => {
-        setSortConfig(prev=>({
+        setSortConfig(prev => ({
             column: col,
-            direction: prev?.column === col ? newDirection(prev): 'desc'
+            direction: prev?.column === col ? newDirection(prev) : 'desc'
         }))
 
 
@@ -77,26 +92,12 @@ function App() {
 
     const data = useMemo(() => {
         const dataArray = [...tickerMap.values()];
-        if (sortConfig) {
-            return dataArray.toSorted((a, b) => {
-                const key = sortConfig.column;
-                let aVal: string | number = a[key];
-                let bVal: string | number  = b[key];
-                let modifier = 0;
-
-                if (sortConfig.direction === "desc") { modifier = -1 }
-                if (sortConfig.direction === "asc") { modifier = 1 }
-
-                if (typeof aVal === "string") {
-                    aVal = aVal.toLocaleLowerCase();
-                    bVal = (bVal as string).toLocaleLowerCase();
-                    return (modifier >=0) ? aVal.localeCompare(bVal) : bVal.localeCompare(aVal);
-                }
-
-                return aVal > (bVal as number) ? modifier : -modifier;
-            })
+        // Skip sorting if no config or direction is 'none'
+        if (!sortConfig || sortConfig.direction === 'none') {
+            return dataArray;
         }
-        return dataArray;
+        return sortData(dataArray, sortConfig);
+
     }, [tickCount, sortConfig]);
 
 
@@ -139,7 +140,7 @@ function App() {
                     </button>
                 </div>
                 <span className={`status ${isConnected ? 'connected' : 'disconnected'}`}>
-                    {isConnected ? `Connected (${subscriptionMode === 'all' ? 'All' : tickerInput})` : 'Disconnected'}
+                    {isConnected ? `Connected (${subMode === 'all' ? 'All' : tickerInput})` : 'Disconnected'}
                 </span>
             </div>
             <Grid data={data} onColumnClicked={columnClicked} sortConfig={sortConfig} />
