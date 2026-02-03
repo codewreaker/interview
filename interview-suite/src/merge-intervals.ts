@@ -37,18 +37,19 @@
 export type Interval = [number, number];
 
 export const mergeIntervals = (intervals: Interval[]): Interval[] => {
-    if (intervals.length === 0) return intervals;
+    if(intervals.length === 0) return intervals;
     const sIntervals = structuredClone(intervals).toSorted((a, b) => (a[0] - b[0]));
-    const result: Interval[] = [[...sIntervals[0]]];
-    for (let i = 1; i < sIntervals.length; i++) {
-        const curr = sIntervals[i];
+    const len = sIntervals.length;
+    const result:Interval[] = [[...sIntervals[0]]];
+
+    for (let i = 0; i<len;i++) {
         const lastResult = result.at(-1)!;
-        if (curr[0] <= lastResult[1]) {
+        const curr = sIntervals[i]
+        if(curr[0]<=lastResult[1]){
             lastResult[1] = Math.max(curr[1], lastResult[1])
-        } else {
+        }else{
             result.push(curr)
         }
     }
     return result;
-
 };

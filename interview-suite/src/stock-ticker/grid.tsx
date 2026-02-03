@@ -32,10 +32,9 @@ const Empty = ({ length }: { length: number }) => (<tr>
 export const Grid: React.FC<{
     data: StockData[];
     sortConfig: SortConfig | null;
-    onColumnClicked?: (column:string)=>void;
+    onColumnClicked?: (column:SortKey)=>void;
 }> = ({ data, sortConfig, onColumnClicked
  }) => {
-    console.log(data)
     return (
         <table>
             <thead>

@@ -21,26 +21,26 @@
  * - Handle empty arrays and objects gracefully.
  */
 
-const isPrimitive =(val:any)=>(typeof val !== "object" || val === null);
-const isTrueObject=(val:any)=>(!(isPrimitive(val) || Array.isArray(val)));
+const isPrimitive=(val:any)=>(typeof val !== "object" || val === null);
+const isTrueObject =(val:any)=>(!(isPrimitive(val) || Array.isArray(val)));
+
 
 export const flatten = (value: any): any => {
-  if(isPrimitive(value)) return value;
+    if(isPrimitive(value)) return value;
 
-  if(Array.isArray(value)){
-    return value.reduce((acc: any[], curr)=>(acc.concat(flatten(curr))),[]);
-  }
-
-  let result: Record<string, any> = {};
-  for (const [k,v] of Object.entries(value)){
-    const flattened = flatten(v as any);
-    if(isTrueObject(flattened)){
-      Object.assign(result, flattened)
-    }else{
-      result[k] = flattened;
+    if(Array.isArray(value)){
+        return value.reduce((acc, curr)=>(acc.concat(flatten(curr))),[]);
     }
-  }
 
-  return result;
+    const result:any = {};
+    for (const [k,v] of Object.entries(value)){
+        const flattened = flatten(v);
+        if(isTrueObject(flattened)){
+            Object.assign(result, flattened);
+        }else{
+            result[k] = flattened;
+        }
+    }
 
+    return result;
 };

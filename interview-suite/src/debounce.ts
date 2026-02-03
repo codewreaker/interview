@@ -69,22 +69,22 @@ export function debounce<T extends AnyFunction>(
     callback: T,
     delay: number,
     immediate: boolean = false
-): (...args: Parameters<T>) => void {
-    let timeoutId: ReturnType<typeof setTimeout> | null = null;
+): (...args: Parameters<T>) => void {   
+    let timeoutId: number | null = null
 
     return function(this:any, ...args: Parameters<T>){
-        const shouldCallImmediate = Boolean(immediate && timeoutId === null);
-        if(timeoutId) clearTimeout(timeoutId);
+         (timeoutId !== null) && clearTimeout(timeoutId);
 
-        timeoutId = setTimeout(()=>{
-            if(!immediate){callback.apply(this, args)};
-            timeoutId = null
-        },delay)
-
-        if(shouldCallImmediate){
+         if(immediate && timeoutId === null){
             callback.apply(this, args);
-        }
+         }
 
+         timeoutId = setTimeout(()=>{
+            if(!immediate){
+                callback.apply(this, args);
+            }
+            timeoutId = null
+         },delay)
     }
 }
 
