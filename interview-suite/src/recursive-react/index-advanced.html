@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>File Explorer - Recursive React Interview</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #1e1e2e 0%, #2d2d3f 100%);
+      min-height: 100vh;
+      padding: 20px;
+      color: #e0e0e0;
+    }
+
+    .container { max-width: 1200px; margin: 0 auto; }
+    h1 { text-align: center; margin-bottom: 20px; color: #89b4fa; }
+
+    /* Instructions */
+    .instructions {
+      background: #313244;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 20px;
+      border: 1px solid #45475a;
+    }
+    .instructions h2 { color: #89b4fa; margin-bottom: 15px; }
+    .instructions h3 { color: #f9e2af; margin: 15px 0 10px; }
+    .instructions ul { margin-left: 20px; line-height: 1.8; }
+    .instructions li { margin: 5px 0; }
+    .instructions code {
+      background: #1e1e2e;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: 'Fira Code', monospace;
+      color: #a6e3a1;
+    }
+    .instructions pre {
+      background: #1e1e2e;
+      padding: 15px;
+      border-radius: 6px;
+      overflow-x: auto;
+      margin: 10px 0;
+      font-family: 'Fira Code', monospace;
+      font-size: 14px;
+    }
+
+    /* File Explorer Styles */
+    .file-explorer {
+      background: #313244;
+      border-radius: 8px;
+      padding: 20px;
+      border: 1px solid #45475a;
+      min-height: 400px;
+    }
+    
+    .file-explorer-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 15px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid #45475a;
+    }
+    
+    .file-explorer-header h2 {
+      color: #89b4fa;
+      font-size: 18px;
+    }
+
+    .tree-item {
+      display: flex;
+      align-items: center;
+      padding: 6px 10px;
+      cursor: pointer;
+      border-radius: 4px;
+      transition: background-color 0.15s;
+    }
+    
+    .tree-item:hover {
+      background: #45475a;
+    }
+    
+    .tree-item.selected {
+      background: #585b70;
+    }
+
+    .tree-item-icon {
+      margin-right: 8px;
+      font-size: 16px;
+      width: 20px;
+      text-align: center;
+    }
+
+    .tree-item-name {
+      flex: 1;
+    }
+
+    .tree-children {
+      margin-left: 20px;
+      border-left: 1px dashed #45475a;
+      padding-left: 10px;
+    }
+
+    .folder-icon { color: #f9e2af; }
+    .file-icon { color: #89b4fa; }
+    .chevron { 
+      color: #6c7086; 
+      transition: transform 0.15s;
+    }
+    .chevron.expanded {
+      transform: rotate(90deg);
+    }
+
+    /* Selection info panel */
+    .selection-panel {
+      background: #1e1e2e;
+      border-radius: 8px;
+      padding: 15px;
+      margin-top: 20px;
+      border: 1px solid #45475a;
+    }
+    
+    .selection-panel h3 {
+      color: #cba6f7;
+      margin-bottom: 10px;
+    }
+
+    /* Layout */
+    .main-content {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    @media (max-width: 768px) {
+      .main-content {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Bonus features */
+    .search-box {
+      width: 100%;
+      padding: 10px 15px;
+      border: 1px solid #45475a;
+      border-radius: 6px;
+      background: #1e1e2e;
+      color: #e0e0e0;
+      font-size: 14px;
+      margin-bottom: 15px;
+    }
+    
+    .search-box:focus {
+      outline: none;
+      border-color: #89b4fa;
+    }
+
+    .highlight {
+      background: #f9e2af;
+      color: #1e1e2e;
+      padding: 0 2px;
+      border-radius: 2px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>📁 Recursive File Explorer <span style="background: #f38ba8; color: #1e1e2e; padding: 4px 10px; border-radius: 12px; font-size: 14px; font-weight: bold; margin-left: 10px;">ADVANCED</span></h1>
+    
+    <div class="instructions">
+      <h2>📋 Interview Task</h2>
+      <p>Build a recursive file explorer component that displays a nested folder/file structure. This tests your understanding of <strong>recursion in React</strong>, <strong>component composition</strong>, and <strong>state management</strong>.</p>
+      
+      <h3>📝 Requirements</h3>
+      <ul>
+        <li>Render a tree structure of folders and files recursively</li>
+        <li>Folders can be expanded/collapsed by clicking on them</li>
+        <li>Display appropriate icons for files (📄) and folders (📁/📂)</li>
+        <li>Highlight the currently selected item</li>
+        <li>Show the full path of the selected item</li>
+        <li>Handle deeply nested structures (5+ levels)</li>
+      </ul>
+
+      <h3>📊 Data Structure</h3>
+      <pre>
+interface FileNode {
+  id: string;
+  name: string;
+  type: 'file' | 'folder';
+  children?: FileNode[];  // Only for folders
+}
+      </pre>
+
+      <h3>🎯 Component API</h3>
+      <pre>
+// Main component
+&lt;FileExplorer 
+  data={fileTree} 
+  onSelect={(node, path) => void}
+/&gt;
+
+// Recursive tree item (internal)
+&lt;TreeNode 
+  node={FileNode}
+  depth={number}
+  path={string}
+  isExpanded={boolean}
+  isSelected={boolean}
+  onToggle={(id) => void}
+  onSelect={(node, path) => void}
+/&gt;
+      </pre>
+
+      <h3>🌟 Bonus Challenges</h3>
+      <ul>
+        <li><strong>Search/Filter:</strong> Add a search box that filters and highlights matching items</li>
+        <li><strong>Keyboard Navigation:</strong> Arrow keys to navigate, Enter to select/toggle</li>
+        <li><strong>Expand All / Collapse All:</strong> Buttons to expand or collapse all folders</li>
+        <li><strong>Lazy Loading:</strong> Load children on demand when folder is expanded</li>
+        <li><strong>Drag & Drop:</strong> Allow reordering files/folders</li>
+        <li><strong>Right-Click Context Menu:</strong> Add, rename, delete operations</li>
+      </ul>
+
+      <h3>💡 Key Concepts Tested</h3>
+      <ul>
+        <li><strong>Recursion:</strong> Component that renders itself for nested data</li>
+        <li><strong>State lifting:</strong> Managing expanded/selected state at parent level</li>
+        <li><strong>Performance:</strong> Avoiding unnecessary re-renders with memoization</li>
+        <li><strong>TypeScript:</strong> Recursive type definitions</li>
+        <li><strong>Accessibility:</strong> ARIA tree role, keyboard navigation</li>
+      </ul>
+
+      <h3>⏱️ Time Expectation</h3>
+      <ul>
+        <li><strong>Basic (30 min):</strong> Recursive rendering + expand/collapse</li>
+        <li><strong>Complete (45 min):</strong> + Selection + proper styling</li>
+        <li><strong>Bonus (60+ min):</strong> + Search + keyboard navigation</li>
+      </ul>
+    </div>
+
+    <div class="main-content">
+      <div class="file-explorer">
+        <div class="file-explorer-header">
+          <span style="font-size: 24px;">📁</span>
+          <h2>Project Files</h2>
+        </div>
+        <div id="root">
+          <!-- React app mounts here -->
+          <p style="color: #6c7086; text-align: center; padding: 40px;">
+            Loading file explorer...<br>
+            <small>Run <code>bun dev</code> to start</small>
+          </p>
+        </div>
+      </div>
+
+      <div>
+        <div class="selection-panel">
+          <h3>📍 Selected Item</h3>
+          <p id="selected-path" style="color: #6c7086;">No item selected</p>
+        </div>
+        
+        <div class="selection-panel" style="margin-top: 15px;">
+          <h3>📈 Stats</h3>
+          <p id="stats" style="color: #6c7086;">Folders: 0 | Files: 0</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="switch-link" style="text-align: center; margin-top: 20px;">
+    <a href="index-basic.html" style="color: #89b4fa;">← Try the Basic Version first</a>
+  </div>
+
+  <script type="module" src="/main.tsx"></script>
+</body>
+</html>
