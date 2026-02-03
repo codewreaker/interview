@@ -7,7 +7,7 @@ import {
   once
 } from "../src/closures";
 
-describe("Closures (Citadel Securities)", () => {
+describe("Closures ", () => {
   describe("createCounter", () => {
     test("should start at 0 by default", () => {
       const counter = createCounter();

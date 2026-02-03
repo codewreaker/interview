@@ -1,7 +1,7 @@
 import { describe, expect, test, mock } from "bun:test";
 import { initClock } from "../src/clock";
 
-describe("Clock (Citadel Securities)", () => {
+describe("Clock ", () => {
 
   describe("initClock", () => {
     test("should return a cleanup function", () => {

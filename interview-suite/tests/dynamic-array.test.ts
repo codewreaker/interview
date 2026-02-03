@@ -1,7 +1,7 @@
 import { describe, expect, test, beforeEach } from "bun:test";
 import { DynamicArray } from "../src/dynamic-array";
 
-describe("Dynamic Array (Citadel Securities)", () => {
+describe("Dynamic Array ", () => {
   let arr: DynamicArray<number>;
 
   beforeEach(() => {

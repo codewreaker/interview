@@ -1,5 +1,5 @@
 /**
- * Interview Question: JavaScript Closures in Practice (Citadel Securities - UI)
+ * Interview Question: JavaScript Closures in Practice 
  *
  * Context:
  * Closures are a fundamental JavaScript concept where a function retains access to variables

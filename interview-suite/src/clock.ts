@@ -1,5 +1,5 @@
 /**
- * Interview Question: Implement a Clock in JavaScript (Citadel Securities - UI)
+ * Interview Question: Implement a Clock in JavaScript 
  *
  * Requirements:
  * 1. formatTime(date: Date): string - Format as "HH:MM:SS" (24-hour, zero-padded)
