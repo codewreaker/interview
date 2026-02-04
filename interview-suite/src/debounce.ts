@@ -69,22 +69,80 @@ export function debounce<T extends AnyFunction>(
     callback: T,
     delay: number,
     immediate: boolean = false
-): (...args: Parameters<T>) => void {   
-    let timeoutId: number | null = null
+): (...args: Parameters<T>) => void {
+    let timeoutId: number | null = null;
+    return function (this: any, ...args: Parameters<T>) {
+        (timeoutId !== null) && clearTimeout(timeoutId);
 
-    return function(this:any, ...args: Parameters<T>){
-         (timeoutId !== null) && clearTimeout(timeoutId);
-
-         if(immediate && timeoutId === null){
+        if (immediate && timeoutId === null) {
             callback.apply(this, args);
-         }
+        }
 
-         timeoutId = setTimeout(()=>{
-            if(!immediate){
+        timeoutId = setTimeout(() => {
+            if (!immediate) {
                 callback.apply(this, args);
             }
             timeoutId = null
-         },delay)
+        }, delay);
     }
 }
 
+/**
+ * Advanced Solution
+ * 
+ export function debounce<T extends AnyFunction>(
+    callback: T,
+    delay: number,
+    immediate: boolean = false
+): {
+    (...args: Parameters<T>): void;
+    cancel: () => void;
+    flush: () => void;
+} {
+    let timeoutId: ReturnType<typeof setTimeout> | null = null;
+    let lastArgs: Parameters<T> | null = null;
+    let lastThis: any = null;
+
+    function cancel() {
+        if (timeoutId !== null) {
+            clearTimeout(timeoutId);
+            timeoutId = null;
+        }
+    }
+
+    function flush() {
+        if (timeoutId !== null && lastArgs !== null) {
+            cancel();
+            callback.apply(lastThis, lastArgs);
+        }
+    }
+
+    function debounced(this: any, ...args: Parameters<T>) {
+        lastArgs = args;
+        lastThis = this;
+
+        if (timeoutId !== null) {
+            clearTimeout(timeoutId);
+        }
+
+        if (immediate && timeoutId === null) {
+            callback.apply(this, args);
+        }
+
+        timeoutId = setTimeout(() => {
+            if (!immediate) {
+                callback.apply(lastThis, lastArgs!);
+            }
+            timeoutId = null;
+            lastArgs = null;
+            lastThis = null;
+        }, delay);
+    }
+
+    debounced.cancel = cancel;
+    debounced.flush = flush;
+
+    return debounced;
+} 
+
+ */

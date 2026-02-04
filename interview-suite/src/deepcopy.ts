@@ -24,7 +24,7 @@
  *   unless you wish to challenge yourself further.
  */
 
-const isPrimitive=(val:any)=>(typeof val !== "object" || val === null);
+const isPrimitive=(val:any)=>(val === null || typeof val !== "object");
 
 export const deepcopy = <T>(value: T): T | T[] => {
     if(isPrimitive(value)) return value;
@@ -34,7 +34,7 @@ export const deepcopy = <T>(value: T): T | T[] => {
     }
 
     const result:Record<string, any> = {};
-    for (const [k,v] of Object.entries(value as any)){
+    for (const [k,v] of Object.entries(value as object)){
         result[k] = deepcopy(v);
     }
     return result as T;

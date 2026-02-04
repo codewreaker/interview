@@ -55,10 +55,24 @@ Array.prototype.myFilter = function <T>(callback: (item: T, index: number, array
 };
 
 Array.prototype.myReduce = function <T, U>(callback: (acc: U, curr: T, index: number, array: T[]) => U, initialValue?: U): U {
-  let accumulator:U = initialValue ?? this[0];
-  const idx = (initialValue === null || initialValue === undefined ) ? 1:0;
-  for (let i=idx;i<this.length;i++){
+  if(this.length === 0 && initialValue === undefined){
+    throw new TypeError('Reduce of empty array with no initial value');
+  }
+
+  let accumulator:U;
+  let startIndex: number;
+
+  if(initialValue!==undefined){
+    accumulator = initialValue;
+    startIndex = 0
+  }else{
+    accumulator = this[0];
+    startIndex = 1;
+  }
+
+  for (let i=startIndex;i<this.length;i++){
     accumulator = callback(accumulator, this[i], i, this);
   }
   return accumulator;
+
 };
