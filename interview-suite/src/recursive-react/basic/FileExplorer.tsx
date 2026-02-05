@@ -24,51 +24,42 @@ import type { FileNode } from './types';
 
 interface FileExplorerProps {
   data: FileNode[];
+  isSearching?: boolean;
+  depth?: number;
 }
 
+export const FileExplorer: React.FC<FileExplorerProps> = ({ data, isSearching, depth = 0 }) => {
+  const [openFolders, setOpenFolders] = useState<Record<string, boolean>>({});
 
-
-
-export const FileExplorer: React.FC<FileExplorerProps> = ({ data }) => {
-  const [showMap, setShowMap] = useState<Record<string, boolean>>({});
-
-  const toggleFolder=({name,type}:FileNode)=>()=>{
-    if (type === "folder"){
-      setShowMap(prev=>{
-        if(prev[name] !== undefined){
-          return {...prev, [name]:!prev[name]}
-        }
-        return {...prev, [name]:true}
-      });
+  const toggleFolder = (name: string, type: string) => () => {
+    if (type === "folder") {
+      setOpenFolders(prev => ({ ...prev, [name]: !prev[name] }));
     }
-  }
-  // TODO: Implement this!
-  // 
-  // You'll need:
-  // 1. State to track open folders: const [openFolders, setOpenFolders] = useState<Set<string>>(new Set())
-  // 2. A recursive component or function to render each node
-  // 3. Click handler to toggle folders
+  };
 
-  return (data.map((file, idx) => (
-    <div key={file.name} className='file-explorer'>
-      <h2 onClick={toggleFolder(file)}><span className={file.type}/>{file.name}</h2>
-      {(file.children && showMap[file.name]) &&<FileExplorer data={file.children} />}
-    </div>
-  )))
+  return (
+    <>
+      {data.map((file) => (
+        <div key={file.name}>
+          <h2 
+            onClick={toggleFolder(file.name, file.type)}
+            style={{ 
+              marginLeft: `${depth * 20}px`,
+              cursor: file.type === 'folder' ? 'pointer' : 'default'
+            }}
+          >
+            <span className={file.type} />
+            {file.name}
+          </h2>
+          {file.children && (openFolders[file.name] || isSearching) && (
+            <FileExplorer 
+              data={file.children} 
+              isSearching={isSearching} 
+              depth={depth + 1}
+            />
+          )}
+        </div>
+      ))}
+    </>
+  );
 };
-
-/**
- * OPTIONAL: You can create a separate TreeNode component
- * or handle everything in FileExplorer - your choice!
- */
-
-// interface TreeNodeProps {
-//   node: FileNode;
-//   level: number;  // For indentation
-//   isOpen: boolean;
-//   onToggle: () => void;
-// }
-
-// const TreeNode: React.FC<TreeNodeProps> = ({ node, level, isOpen, onToggle }) => {
-//   // TODO: Implement
-// };

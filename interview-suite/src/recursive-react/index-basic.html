@@ -141,6 +141,35 @@
       text-decoration: underline;
     }
 
+    .search-box{
+      display: flex;
+      flex-direction: row;
+      gap: 10px;
+      align-items: center;
+      border-radius: 5px;
+      padding: 5px;
+
+      input[type="search"] {
+        flex: 1;
+        background: #1e1e2e;
+        border: 1px solid #45475a;
+        border-radius: 4px;
+        padding: 8px 12px;
+        color: #e0e0e0;
+        font-family: inherit;
+      }
+
+      input[type="search"]::placeholder {
+        color: #6c7086;
+      }
+
+      input[type="search"]:focus {
+        outline: none;
+        border-color: #89b4fa;
+        box-shadow: 0 0 0 2px rgba(137, 180, 250, 0.1);
+      }
+    }
+
     #root {
       min-height: 200px;
     }
