@@ -34,16 +34,15 @@
 
 export const histogram = (points: number[], boundaries: number[]): number[] => {
     const len = boundaries.length - 1;
-    const results = (new Array(len)).fill(0);
-    if (points.length === 0 || boundaries.length === 0) return results;
+    const result:number[] = (new Array(len)).fill(0);
+    if (points.length === 0) return result;
 
-    for (const p of points) {
-        for (let i = 0; i < len; i++) {
-            if (p >= boundaries[i] && p < boundaries[i + 1]) {
-                results[i]++;
-                break;
+    for (const p of points){
+        for (let i=0; i<len;i++){
+            if(p >= boundaries[i] && p < boundaries[i+1]){
+                result[i]++
             }
         }
     }
-    return results;
+    return result;
 };

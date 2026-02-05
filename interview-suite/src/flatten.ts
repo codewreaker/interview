@@ -32,25 +32,25 @@
  * - Handle empty arrays and objects gracefully.
  */
 
-const isPrimitive = (val: any) => (val === null || typeof val !== "object");
+const isPrimitive = (val: any) => (val === null || typeof val !== 'object');
 const isTrueObject = (val: any) => (!(isPrimitive(val) || Array.isArray(val)));
-
 
 export const flatten = (value: any): any => {
     if (isPrimitive(value)) return value;
 
     if (Array.isArray(value)) {
-        return value.reduce((acc, curr) => (acc.concat(flatten(curr))), [])
+        return value.reduce((acc, curr) => (acc.concat(flatten(curr))), []);
     }
 
     const result: Record<string, any> = {};
     for (const [k, v] of Object.entries(value)) {
         const flattenedValue = flatten(v);
-        if(isTrueObject(flattenedValue)){
-            Object.assign(result, flattenedValue);
-        }else{
+        if (isTrueObject(flattenedValue)) {
+            Object.assign(result, flattenedValue)
+        } else {
             result[k] = flattenedValue
         }
     }
     return result;
+
 };
