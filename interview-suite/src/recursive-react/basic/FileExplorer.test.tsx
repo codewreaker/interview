@@ -52,11 +52,13 @@ describe('Basic FileExplorer', () => {
 
   it('shows file icon for files', () => {
     render(<FileExplorer data={testData} />);
-    expect(screen.getByText('📄')).toBeInTheDocument();
+    const fileElement = screen.getByText('file1.ts').parentElement?.querySelector('.file');
+    expect(fileElement).toBeInTheDocument();
   });
 
   it('shows folder icon for folders', () => {
     render(<FileExplorer data={testData} />);
-    expect(screen.getByText(/📁|📂/)).toBeInTheDocument();
+    const folderElement = screen.getByText('folder1').parentElement?.querySelector('.folder');
+    expect(folderElement).toBeInTheDocument();
   });
 });

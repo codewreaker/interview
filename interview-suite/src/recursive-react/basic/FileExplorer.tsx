@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import type { FileNode } from './types';
+
 
 /**
  * ============================================================
@@ -25,7 +26,22 @@ interface FileExplorerProps {
   data: FileNode[];
 }
 
+
+
+
 export const FileExplorer: React.FC<FileExplorerProps> = ({ data }) => {
+  const [showMap, setShowMap] = useState<Record<string, boolean>>({});
+
+  const toggleFolder=({name,type}:FileNode)=>()=>{
+    if (type === "folder"){
+      setShowMap(prev=>{
+        if(prev[name] !== undefined){
+          return {...prev, [name]:!prev[name]}
+        }
+        return {...prev, [name]:true}
+      });
+    }
+  }
   // TODO: Implement this!
   // 
   // You'll need:
@@ -33,15 +49,12 @@ export const FileExplorer: React.FC<FileExplorerProps> = ({ data }) => {
   // 2. A recursive component or function to render each node
   // 3. Click handler to toggle folders
 
-  return (
-    <div>
-      <p style={{ color: '#888', padding: '20px' }}>
-        TODO: Render the file tree here!
-        <br /><br />
-        Tip: Create a TreeNode component that renders itself for children.
-      </p>
+  return (data.map((file, idx) => (
+    <div key={file.name} className='file-explorer'>
+      <h2 onClick={toggleFolder(file)}><span className={file.type}/>{file.name}</h2>
+      {(file.children && showMap[file.name]) &&<FileExplorer data={file.children} />}
     </div>
-  );
+  )))
 };
 
 /**

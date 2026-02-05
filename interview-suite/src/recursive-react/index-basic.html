@@ -1,12 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>File Explorer - Basic Version</title>
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       background: linear-gradient(135deg, #1e1e2e 0%, #2d2d3f 100%);
@@ -15,9 +20,22 @@
       color: #e0e0e0;
     }
 
-    .container { max-width: 800px; margin: 0 auto; }
-    h1 { text-align: center; margin-bottom: 10px; color: #89b4fa; }
-    .subtitle { text-align: center; color: #a6adc8; margin-bottom: 20px; }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 10px;
+      color: #89b4fa;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #a6adc8;
+      margin-bottom: 20px;
+    }
 
     .instructions {
       background: #313244;
@@ -26,9 +44,24 @@
       margin-bottom: 20px;
       border: 1px solid #45475a;
     }
-    .instructions h2 { color: #89b4fa; margin-bottom: 15px; font-size: 18px; }
-    .instructions h3 { color: #f9e2af; margin: 15px 0 10px; font-size: 16px; }
-    .instructions ul { margin-left: 20px; line-height: 1.8; }
+
+    .instructions h2 {
+      color: #89b4fa;
+      margin-bottom: 15px;
+      font-size: 18px;
+    }
+
+    .instructions h3 {
+      color: #f9e2af;
+      margin: 15px 0 10px;
+      font-size: 16px;
+    }
+
+    .instructions ul {
+      margin-left: 20px;
+      line-height: 1.8;
+    }
+
     .instructions code {
       background: #1e1e2e;
       padding: 2px 6px;
@@ -36,6 +69,7 @@
       font-family: 'Fira Code', monospace;
       color: #a6e3a1;
     }
+
     .instructions pre {
       background: #1e1e2e;
       padding: 15px;
@@ -49,18 +83,30 @@
     .file-explorer {
       background: #313244;
       border-radius: 8px;
-      padding: 20px;
+      padding: 5px 20px;
       border: 1px solid #45475a;
-      min-height: 300px;
     }
-    
+
     .file-explorer h2 {
       color: #89b4fa;
       font-size: 16px;
-      margin-bottom: 15px;
-      padding-bottom: 10px;
-      border-bottom: 1px solid #45475a;
+      cursor: pointer;
+
+      span.folder::before {
+        content: "📁";
+      }
+
+      span.file::before {
+        content: "📄";
+      }
+
+      span.folder::after,
+      span.file::after {
+        content: " ";
+      }
+
     }
+
 
     .badge {
       display: inline-block;
@@ -70,33 +116,46 @@
       font-weight: bold;
       margin-left: 10px;
     }
-    .badge-basic { background: #a6e3a1; color: #1e1e2e; }
-    .badge-advanced { background: #f38ba8; color: #1e1e2e; }
+
+    .badge-basic {
+      background: #a6e3a1;
+      color: #1e1e2e;
+    }
+
+    .badge-advanced {
+      background: #f38ba8;
+      color: #1e1e2e;
+    }
 
     .switch-link {
       text-align: center;
       margin-top: 20px;
     }
+
     .switch-link a {
       color: #89b4fa;
       text-decoration: none;
     }
+
     .switch-link a:hover {
       text-decoration: underline;
     }
 
-    #root { min-height: 200px; }
+    #root {
+      min-height: 200px;
+    }
   </style>
 </head>
+
 <body>
   <div class="container">
     <h1>📁 Recursive File Explorer <span class="badge badge-basic">BASIC</span></h1>
     <p class="subtitle">⏱️ Expected time: 15-20 minutes</p>
-    
+
     <div class="instructions">
       <h2>📋 Your Task</h2>
       <p>Build a simple file explorer that shows folders and files in a tree structure.</p>
-      
+
       <h3>Requirements (just 3!)</h3>
       <ul>
         <li>Show files with 📄 icon, folders with 📁 icon</li>
@@ -111,17 +170,6 @@
   children?: FileNode[];  // Only folders have children
 }</pre>
 
-      <h3>Hint: The Recursive Pattern</h3>
-      <pre>const renderNode = (node, level) => {
-  return (
-    &lt;div style={{ marginLeft: level * 20 }}&gt;
-      {node.type === 'folder' ? '📁' : '📄'} {node.name}
-      
-      {/* 👇 This is the recursion - render children the same way! */}
-      {node.children?.map(child => renderNode(child, level + 1))}
-    &lt;/div&gt;
-  );
-};</pre>
     </div>
 
     <div class="file-explorer">
@@ -141,4 +189,5 @@
 
   <script type="module" src="/basic/main.tsx"></script>
 </body>
+
 </html>
