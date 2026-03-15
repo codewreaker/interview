@@ -12,20 +12,15 @@
  * cleanup(); // stops the clock
  */
 const formatTime = (now: Date) => {
-    const hour = String(now.getHours()).padStart(2, "0");
-    const min = String(now.getMinutes()).padStart(2, "0");
-    const secs = String(now.getSeconds()).padStart(2, "0");
-    return `${hour}:${min}:${secs}`;
+
 }
+
 export const initClock = (onTick: (time: string) => void = console.log): () => void => {
-    const tick=(now: Date)=>{
-        onTick(formatTime(now))
+    const tick=()=>{
+        const t = (new Date(Date.now())).toLocaleTimeString('en-GB');
+        onTick(t)
     }
 
-    tick(new Date()); // to immediately show time once it starts
-    const intervalId = setInterval(()=>(tick(new Date())),1000);
-
-    return ()=>{
-        clearInterval(intervalId)
-    }
+    const intervalId = setInterval(tick, 1000);
+    return ()=>clearInterval(intervalId);
 };
