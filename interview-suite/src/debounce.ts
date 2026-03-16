@@ -72,21 +72,24 @@ export function debounce<T extends AnyFunction>(
 ): (...args: Parameters<T>) => void {
     let timeoutId: ReturnType<typeof setTimeout> | null = null;
     return function (this: any, ...args: Parameters<T>) {
-        // if a previous setTimeout is insession delete
-        if (timeoutId) clearTimeout(timeoutId);
+        timeoutId && clearTimeout(timeoutId);
 
-        //First initial call of function
-        // trigger it only when immediate flag is set
-        if (immediate && timeoutId === null){
-            callback.apply(this, args)
+        if (immediate && timeoutId === null) {
+            callback.apply(this, args);
         }
 
         timeoutId = setTimeout(() => {
-            if(!immediate){callback.apply(this, args)}
-            timeoutId = null
+            if (!immediate) {
+                callback.apply(this, args);
+            }
+            timeoutId = null;
         }, delay)
     }
 }
+
+const debouncedFunction = debounce((...args) => {
+    //continue
+}, 300);
 
 
 /**
