@@ -32,6 +32,30 @@
  * - Handle empty arrays and objects gracefully.
  */
 
+const isPrimitive = (val: unknown) => ((typeof val !== 'object') || val === null);
+const isTrueObject = (val: object) => (!isPrimitive(val) && !Array.isArray(val));
+
+export const flatten = (value: any): any => {
+    if (isPrimitive(value)) return value;
+    if (Array.isArray(value)) {
+        return value.reduce((acc, curr) => {
+            return acc.concat(flatten(curr))
+        }, [])
+    }
+
+
+    return Object.entries(value as object).reduce((result, [k, v]) => {
+        const fValue = flatten(v)
+        if (isTrueObject(v)) return Object.assign({}, result, fValue)
+        result[k] = fValue
+        return result;
+    }, {} as Record<string, unknown>)
+
+};
+
+
+/**
+ * 
 const isPrimitive = <T>(value: T): boolean => ((typeof value !== "object" || value === null));
 
 export const flatten = (value: any): any => {
@@ -48,3 +72,5 @@ export const flatten = (value: any): any => {
         return acc
     },{} as Record<string, unknown>);
 };
+
+ */

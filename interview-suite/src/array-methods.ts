@@ -55,21 +55,20 @@ Array.prototype.myFilter = function <T>(callback: (item: T, index: number, array
 };
 
 Array.prototype.myReduce = function <T, U>(callback: (acc: U, curr: T, index: number, array: T[]) => U, initialValue?: U): U {
-  let acc: U;
-  let startIndex: number;
-
+  let accu: U;
+  let startIndex = 0
   if (initialValue !== null && initialValue !== undefined) {
-    startIndex = 0
-    acc = initialValue;
-  }else{
+    accu = initialValue
+  } else {
+    //set first item to initialValue
+    accu = this[0]
+    // start iteration from the next value
     startIndex = 1
-    acc = this[0];
   }
 
-  for (let i=startIndex; i < this.length ; i++){
-    acc  = callback(acc, this[i], i, this);
+  for (let i = startIndex; i < this.length; i++) {
+    accu = callback(accu, this[i], i, this);
   }
 
-  return acc;
-
+  return accu;
 };

@@ -37,5 +37,18 @@
 export type Interval = [number, number];
 
 export const mergeIntervals = (intervals: Interval[]): Interval[] => {
-
+    const len = intervals.length;
+    if(len === 0) return intervals;
+    const newIntervals = structuredClone(intervals).sort(([st1, end1], [st2, end2]) => (st1 - st2));
+    const mergedResult = [newIntervals[0]];
+    for (let i=1;i<len;i++){
+        const curr = newIntervals[i];
+        const lastResult = mergedResult.at(-1)!;
+        if(curr[0] <= lastResult[1]){
+            lastResult[1] = Math.max(curr[1], lastResult[1])
+        }else{
+            mergedResult.push(curr)
+        }
+    }
+    return mergedResult;
 };
