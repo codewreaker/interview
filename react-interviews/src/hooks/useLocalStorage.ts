@@ -10,12 +10,11 @@
  * - Return a tuple similar to useState: [value, setValue]
  * - Automatically synchronize state with localStorage
  * - Handle JSON serialization and deserialization
- * - Support initializing with a value or a function
+ * - Support initializing with a value
  * - Clean up event listeners to prevent memory leaks
- * - Handle cases where localStorage is not available (SSR)
  * - Support removing items from localStorage
  * 
- * Features to consider:
+ * Features to consider (not required to pass):
  * - What happens if the stored value is corrupted?
  * - How do you sync state across tabs/windows?
  * - How do you handle the initial load?
@@ -32,7 +31,36 @@
 
 import { useState, useEffect, useCallback } from "react";
 
-export function useLocalStorage<T>(key: string, initialValue: T | (() => T)): [T, (value: T | ((val: T) => T)) => void, () => void] {
+const getValue=(key:string)=>{
+  try {
+    return JSON.parse(localStorage.getItem(key) as string)
+  } catch (error) {
+    return null
+  }
+}
+
+export function useLocalStorage<T>(key: string, initialValue?: T): [T, (val: T) => void, () => void] {
+
+  const [value, setValue] = useState(()=>{
+    const initItem = getValue(key);
+    return initItem || initialValue;
+  });
+
+  const deleteItem = useCallback(()=>{
+    localStorage.removeItem(key);
+  },[key]);
+
+  const setLocalValue=useCallback((valueToSet:T)=>{
+    localStorage.setItem(key, JSON.stringify(valueToSet));
+    setValue(valueToSet);
+  },[key]);
+
+
+  return [value, setLocalValue, deleteItem];
+}
+
+export default useLocalStorage;
+
   // TODO: Implement the custom hook
   
   // Steps to implement:
@@ -110,8 +138,3 @@ export function useLocalStorage<T>(key: string, initialValue: T | (() => T)): [T
 
   return [storedValue, setValue, removeValue];
   */
-
-  return [{} as T, () => {}, () => {}];
-}
-
-export default useLocalStorage;

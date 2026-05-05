@@ -154,10 +154,10 @@ function App() {
       {error && <ErrorBanner message={error} onDismiss={clearError} />}
 
       {/* Data Grid */}
-      <Grid
-        data={data}
-        sortConfig={sortConfig}
-        onColumnClicked={handleColumnSort}
+      <Grid 
+      data={data}
+      sortConfig={sortConfig}
+      handleColumnSort={handleColumnSort}
       />
     </div>
   );

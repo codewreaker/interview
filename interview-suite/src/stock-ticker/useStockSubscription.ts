@@ -7,7 +7,7 @@ import { subscribeAllStocks, subscribeStock, type StockData } from './stockApi';
 
 export type SubscriptionMode = 'single' | 'all' | 'none';
 
-export type ConnectionStatus = 
+export type ConnectionStatus =
   | { state: 'disconnected' }
   | { state: 'connected'; mode: 'all' }
   | { state: 'connected'; mode: 'single'; ticker: string };
@@ -58,7 +58,7 @@ interface UseStockSubscriptionReturn {
 
 const getNextSortDirection = (current: SortConfig, column: keyof StockData): SortDirection => {
   if (current.column !== column) return 'desc'; // New column starts descending
-  
+
   // Cycle: desc → asc → none → desc
   const cycle: Record<SortDirection, SortDirection> = {
     desc: 'asc',
@@ -89,6 +89,10 @@ const sortStockData = (data: StockData[], config: SortConfig | null): StockData[
 // Hook Implementation
 // ============================================================================
 
+
+/** O(1) lookup map - kept outside React state to avoid copy overhead */
+const stockMap: Map<string, StockData> = (new Map());
+
 export function useStockSubscription(
   options: UseStockSubscriptionOptions = {}
 ): UseStockSubscriptionReturn {
@@ -101,39 +105,37 @@ export function useStockSubscription(
   // -------------------------------------------------------------------------
   // State
   // -------------------------------------------------------------------------
-  
+
   /** Render trigger - incremented on each stock update */
   const [tickCount, setTickCount] = useState(0);
-  
+
   /** Current subscription mode */
   const [mode, setMode] = useState<SubscriptionMode>('none');
-  
+
   /** Currently subscribed ticker (for single mode) */
   const [subscribedTicker, setSubscribedTicker] = useState<string | null>(null);
-  
+
   /** Error message */
   const [error, setError] = useState<string | null>(null);
-  
+
   /** Sort configuration */
   const [sortConfig, setSortConfig] = useState<SortConfig | null>(defaultSort);
 
   // -------------------------------------------------------------------------
   // Refs (mutable state that doesn't trigger re-renders)
   // -------------------------------------------------------------------------
-  
-  /** O(1) lookup map - kept outside React state to avoid copy overhead */
-  const stockMapRef = useRef<Map<string, StockData>>(new Map());
-  
+
+
   /** Current unsubscribe function */
   const unsubscribeRef = useRef<(() => void) | null>(null);
-  
+
   /** Last successfully connected ticker (for error recovery) */
   const lastWorkingTickerRef = useRef<string | null>(null);
 
   // -------------------------------------------------------------------------
   // Derived State
   // -------------------------------------------------------------------------
-  
+
   const isConnected = mode !== 'none';
 
   const status: ConnectionStatus = useMemo(() => {
@@ -143,7 +145,7 @@ export function useStockSubscription(
   }, [mode, subscribedTicker]);
 
   const data = useMemo(() => {
-    const dataArray = [...stockMapRef.current.values()];
+    const dataArray = [...stockMap.values()];
     return sortStockData(dataArray, sortConfig);
     // tickCount dependency ensures re-computation on stock updates
   }, [tickCount, sortConfig]);
@@ -151,19 +153,19 @@ export function useStockSubscription(
   // -------------------------------------------------------------------------
   // Internal Handlers
   // -------------------------------------------------------------------------
-  
+
   /** Clean up subscription without changing state */
   const cleanup = useCallback(() => {
     if (unsubscribeRef.current) {
       unsubscribeRef.current();
       unsubscribeRef.current = null;
     }
-    stockMapRef.current.clear();
+    stockMap.clear();
   }, []);
 
   /** Handle incoming stock data */
   const handleStockUpdate = useCallback((stock: StockData) => {
-    stockMapRef.current.set(stock.ticker, stock);
+    stockMap.set(stock.ticker, stock);
     setTickCount(c => c + 1);
   }, []);
 
@@ -171,7 +173,7 @@ export function useStockSubscription(
   const handleSubscriptionError = useCallback((err: Error) => {
     const failedTicker = subscribedTicker;
     const errorMessage = `Failed to subscribe to "${failedTicker}": ${err.message || 'Unknown error'}`;
-    
+
     setError(errorMessage);
     onError?.(err, failedTicker || '');
 
@@ -189,7 +191,7 @@ export function useStockSubscription(
   // -------------------------------------------------------------------------
   // Subscription Effect
   // -------------------------------------------------------------------------
-  
+
   useEffect(() => {
     if (mode === 'none') return;
 
@@ -224,7 +226,7 @@ export function useStockSubscription(
   // -------------------------------------------------------------------------
   // Public API
   // -------------------------------------------------------------------------
-  
+
   const subscribeAll = useCallback(() => {
     cleanup();
     setSubscribedTicker(null);
@@ -234,7 +236,7 @@ export function useStockSubscription(
 
   const subscribeSingle = useCallback((ticker: string) => {
     const normalizedTicker = ticker.trim().toUpperCase();
-    
+
     if (!normalizedTicker) {
       setError('Please enter a valid ticker symbol');
       return;
@@ -265,7 +267,7 @@ export function useStockSubscription(
   // -------------------------------------------------------------------------
   // Return
   // -------------------------------------------------------------------------
-  
+
   return {
     data,
     status,
