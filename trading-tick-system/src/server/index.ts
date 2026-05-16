@@ -38,23 +38,19 @@ app.get('/', upgradeWebSocket(() => ({
 
     },
     onMessage({ data }) {
-        switch (data?.action) {
-            case ACTIONS.PRICE:
-
-                break;
-            case ACTIONS.SUB:
-
-                break;
-            case ACTIONS.SYMBOLS:
-
-                break;
+        const message = JSON.parse(data as string);
+        switch (message?.action) {
+            case ACTIONS.DISCONNECT:
+                DataService.getInstance().stopStreaming();
+                break
             default:
-                console.log(data)
+                console.log('no handler for', message)
                 break;
         }
     },
-    onClose() {
+    onClose(_, sock) {
         DataService.getInstance().stopStreaming();
+        sock.close(1006, 'stream stopped due to close')
     }
 })))
 

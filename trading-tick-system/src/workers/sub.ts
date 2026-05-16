@@ -7,16 +7,13 @@ self.onmessage = ({ data }: MessageEvent) => {
         case ACTIONS.CONNECT:
             connect("ws://localhost:3000")
             break;
+        // case ACTIONS.DISCONNECT:
+        //     //socket?.close(1000, "closed by client");
+        //     break;
 
-        case ACTIONS.DISCONNECT:
-            console.log
-            socket?.close()
-            break;
         default:
-            console.log('fromWorker', data)
             socket?.send(JSON.stringify({
-                action: data.action,
-                payload: data.data
+                action: data.action
             }))
             break;
     }
@@ -26,8 +23,7 @@ function connect(url: string) {
     const _socket = new WebSocket(url);
     socket = _socket;
 
-    _socket.onopen = (event) => {
-        console.log('WebSocket client opened', event);
+    _socket.onopen = () => {
         _socket.send(JSON.stringify({ action: ACTIONS.CONNECT }));
     };
 
@@ -47,7 +43,13 @@ function connect(url: string) {
 
     };
 
-    _socket.onclose = () => {
-        self.postMessage({ type: "CLOSED" });
+    _socket.onclose = ({ code, wasClean, reason}) => {
+        //const reason = (code === 1005 && wasClean) ? 'closed by client' : 'closed from server';
+        self.postMessage({
+            type: "CLOSED",
+            payload: {
+                code, reason, wasClean
+            },
+        });
     };
 }

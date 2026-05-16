@@ -10,7 +10,6 @@ const worker = new Worker(new URL('./workers/sub.ts', import.meta.url), {
 
 worker.onmessage = (event)=>{
   console.log('from worker to client', event.data)
-
 }
 
 
@@ -43,7 +42,6 @@ export const App = () => {
     <div style={{ padding: '20px', fontFamily: 'Arial, sans-serif' }}>
       <div className='title-header'>
         <h1>Trading Tick System</h1>
-        {/* <img src={commentIcon}></img> */}
       </div>
 
       <div style={{ marginBottom: '20px' }}>
