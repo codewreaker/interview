@@ -19,7 +19,7 @@ interface PriceState {
 class DataService {
   private priceStates: Map<string, PriceState>;
   private subscribers: Set<(tick: TickData) => void> = new Set();
-  private tickIntervalId: NodeJS.Timeout | null = null;
+  private tickIntervalId: number | null = null;
 
   constructor() {
     this.priceStates = new Map();

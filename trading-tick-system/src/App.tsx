@@ -1,31 +1,24 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { TickTable } from './TickTable';
 //import { dataService } from './dataService';
 import type { TickData } from './types';
+import './App.css'
 
 export const App = () => {
   const [ticks, setTicks] = useState<TickData[]>([]);
   const [isStreaming, setIsStreaming] = useState(false);
 
-  useEffect(() => {
-    console.log('App mounted, subscribing to ticks');
-    const unsubscribe = dataService.subscribe((tick) => {
-      console.log('Received tick:', tick);
-      setTicks((prev) => [tick, ...prev].slice(0, 100));
-    });
 
-    return () => unsubscribe();
-  }, []);
 
   const handleStartStreaming = () => {
     console.log('Starting streaming');
-    dataService.startStreaming(500);
+    // implement
     setIsStreaming(true);
   };
 
   const handleStopStreaming = () => {
     console.log('Stopping streaming');
-    dataService.stopStreaming();
+    // implement
     setIsStreaming(false);
   };
 
@@ -36,8 +29,11 @@ export const App = () => {
 
   return (
     <div style={{ padding: '20px', fontFamily: 'Arial, sans-serif' }}>
-      <h1>Trading Tick System</h1>
-      
+      <div className='title-header'>
+        <h1>Trading Tick System</h1>
+        {/* <img src={commentIcon}></img> */}
+      </div>
+
       <div style={{ marginBottom: '20px' }}>
         <button onClick={handleStartStreaming} disabled={isStreaming}>
           Start Streaming

@@ -22,6 +22,30 @@
   letter-spacing: -0.5px;
 }
 
+.title-header {
+  background: rgba(0, 0, 0, 0.225) url(./assets/comment.svg) no-repeat center center;
+  height: 200px;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+  border-radius: 10px;
+  margin: 20px 0px;
+
+  h1 {
+    color: #c3e3f8;
+    font-weight: bolder;
+    font-size: 3rem;
+    transition: transform 0.3s ease, color 0.3s ease;
+  }
+
+  &:hover {
+    h1 {
+      transform: scale(2);
+      color: #e2f1fb;
+    }
+  }
+}
+
 .subtitle {
   margin: 0;
   font-size: 16px;
@@ -178,10 +202,12 @@
 }
 
 @keyframes pulse-dot {
+
   0%,
   100% {
     opacity: 1;
   }
+
   50% {
     opacity: 0.7;
   }
