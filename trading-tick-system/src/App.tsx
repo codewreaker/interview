@@ -1,23 +1,35 @@
 import { useState } from 'react';
 import { TickTable } from './TickTable';
-//import { dataService } from './dataService';
 import type { TickData } from './types';
 import './App.css'
+import { ACTIONS } from './constants';
+
+const worker = new Worker(new URL('./workers/sub.ts', import.meta.url), {
+  type: 'module'
+});
+
+worker.onmessage = (event)=>{
+  console.log('from worker to client', event.data)
+
+}
+
 
 export const App = () => {
   const [ticks, setTicks] = useState<TickData[]>([]);
   const [isStreaming, setIsStreaming] = useState(false);
 
-
-
   const handleStartStreaming = () => {
-    console.log('Starting streaming');
+    worker.postMessage({
+      action: ACTIONS.CONNECT
+    })
     // implement
     setIsStreaming(true);
   };
 
   const handleStopStreaming = () => {
-    console.log('Stopping streaming');
+    worker.postMessage({
+      action: ACTIONS.DISCONNECT
+    })
     // implement
     setIsStreaming(false);
   };

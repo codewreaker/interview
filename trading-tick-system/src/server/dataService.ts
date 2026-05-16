@@ -1,4 +1,5 @@
-import type { TickData } from './types';
+import type { TickData } from '../types';
+import { randomUUID } from 'node:crypto'
 
 /**
  * Mock trading data service that generates realistic live tick data
@@ -16,14 +17,28 @@ interface PriceState {
   lastChange: number;
 }
 
-class DataService {
+
+export class DataService {
   private priceStates: Map<string, PriceState>;
   private subscribers: Set<(tick: TickData) => void> = new Set();
-  private tickIntervalId: number | null = null;
+  private tickIntervalId: NodeJS.Timeout | null = null;
+  instanceId: string | null = null
+
+
+
+  static instance: DataService | null = null;
 
   constructor() {
     this.priceStates = new Map();
     this.initializePrices();
+    this.instanceId = randomUUID();
+  }
+
+  static getInstance = (): DataService => {
+    if (!DataService.instance) {
+      DataService.instance = new DataService()
+    }
+    return DataService.instance;
   }
 
   private initializePrices(): void {
@@ -43,24 +58,24 @@ class DataService {
 
   private generateTick(symbol: string): TickData {
     const state = this.priceStates.get(symbol)!;
-    
+
     // Random price movement (-0.5% to +0.5%)
     const changePercent = (Math.random() - 0.5) * 0.01;
     const priceChange = state.currentPrice * changePercent;
     state.currentPrice += priceChange;
     state.lastChange = priceChange;
-    
+
     const spread = state.currentPrice * 0.0002; // 0.02% spread
     state.bid = state.currentPrice - spread / 2;
     state.ask = state.currentPrice + spread / 2;
-    
+
     // Volume with realistic variation
     state.volume = Math.floor(
       (state.volume * 0.7) + Math.random() * state.volume * 0.6
     );
 
     const change = state.currentPrice - state.basePrice;
-    
+
     return {
       symbol,
       price: parseFloat(state.currentPrice.toFixed(2)),
@@ -86,7 +101,7 @@ class DataService {
       // Generate a tick for a random symbol
       const randomSymbol = SYMBOLS[Math.floor(Math.random() * SYMBOLS.length)];
       const tick = this.generateTick(randomSymbol);
-      
+
       // Notify all subscribers
       this.subscribers.forEach((callback) => callback(tick));
     }, intervalMs);
@@ -120,7 +135,7 @@ class DataService {
   getPrice(symbol: string): TickData | null {
     const state = this.priceStates.get(symbol);
     if (!state) return null;
-    
+
     return {
       symbol: state.symbol,
       price: state.currentPrice,
@@ -152,6 +167,3 @@ class DataService {
     return ticks;
   }
 }
-
-// Export singleton instance
-export const dataService = new DataService();
