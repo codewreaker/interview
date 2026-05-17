@@ -1,4 +1,4 @@
-import { ACTIONS } from "../constants";
+import { ACTIONS, MSG_TYPES } from "../constants";
 
 let socket: WebSocket | null = null;
 
@@ -7,10 +7,9 @@ self.onmessage = ({ data }: MessageEvent) => {
         case ACTIONS.CONNECT:
             connect("ws://localhost:3000")
             break;
-        // case ACTIONS.DISCONNECT:
-        //     //socket?.close(1000, "closed by client");
-        //     break;
-
+        case ACTIONS.DISCONNECT:
+            socket?.close(1000, "closed by client");
+            break;
         default:
             socket?.send(JSON.stringify({
                 action: data.action
@@ -32,12 +31,11 @@ function connect(url: string) {
             type: "MESSAGE",
             payload: event.data,
         });
-
     };
 
     _socket.onerror = (err) => {
         self.postMessage({
-            type: "ERROR",
+            type: MSG_TYPES.ERROR,
             payload: err,
         });
 
@@ -46,7 +44,7 @@ function connect(url: string) {
     _socket.onclose = ({ code, wasClean, reason}) => {
         //const reason = (code === 1005 && wasClean) ? 'closed by client' : 'closed from server';
         self.postMessage({
-            type: "CLOSED",
+            type: MSG_TYPES.CLOSED,
             payload: {
                 code, reason, wasClean
             },

@@ -5,7 +5,31 @@ import { randomUUID } from 'node:crypto'
  * Mock trading data service that generates realistic live tick data
  */
 
-const SYMBOLS = ['AAPL', 'GOOGL', 'MSFT', 'AMZN', 'TSLA', 'META', 'NVDA', 'AMD'];
+const SYMBOLS = [
+  // Mega-Cap & Technology Leaders
+  "AAPL", "MSFT", "GOOGL", "GOOG", "AMZN", "NVDA", "META", "TSLA", "AVGO", "AMD", 
+  "INTC", "QCOM", "TXN", "AMAT", "LRCX", "ADI", "MU", "PANW", "FTNT", "CRWD", 
+  "CSCO", "ORCL", "ADBE", "CRM", "INTU", "SNPS", "CDNS", "WDAY", "TEAM", "DDOG",
+
+  // E-Commerce, Digital Media & Services
+  "NFLX", "PDD", "MELI", "BKNG", "JD", "BIDU", "EBAY", "ETSY", "EXPE", "TRIP",
+  "ABNB", "DASH", "LYFT", "ZG", "GRUB", "MTCH", "ROKU", "PINS", "SNAP", "TTD",
+
+  // Biotech & Healthcare Pharmaceuticals
+  "AMGN", "GILD", "VRTX", "REGN", "BIIB", "SGEN", "MRNA", "BNTX", "ILMN", "ALNY",
+  "DXCM", "IDXX", "WBA", "CVS", "ISRG", "BSX", "MDT", "ZBH", "ALXN", "AZN",
+
+  // Consumer, Retail & Automotive
+  "SBUX", "COST", "WMT", "MDLZ", "PEP", "KHC", "MNST", "CELH", "ORLY", "AZO",
+  "TSCO", "LULU", "ROST", "DLTR", "DG", "ULTA", "HAS", "MAT", "CROX", "NKE",
+
+  // Industrials, Logistics & Semiconductors
+  "HON", "LMT", "GE", "AAL", "UAL", "DAL", "LUV", "FAST", "ODFL", "CSX", 
+  "NSC", "UNP", "JBHT", "EXPD", "CHRW", "PCAR", "CUMM", "DE", "CAT", "NXPI",
+
+  // Major Index Tracking ETFs & Funds
+  "QQQ", "TQQQ", "SQQQ", "ONEQ", "QQQM", "QQQJ", "VXUS", "VTI", "BND", "IEFA"
+];
 
 interface PriceState {
   symbol: string;

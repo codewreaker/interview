@@ -25,32 +25,35 @@ app.get('/', upgradeWebSocket(() => ({
         const inst = DataService.getInstance();
         const wsRaw = (raw as ServerWebSocket);
         wsRaw?.send(JSON.stringify({
-            message: inst.instanceId
+            subId: inst.instanceId
         }));
 
-        const cb = (tickData: TickData) => {
-            wsRaw?.send(JSON.stringify({
-                message: tickData
-            }));
-        }
-        inst.subscribe(cb);
-        inst.startStreaming(16);
-
     },
-    onMessage({ data }) {
+    onMessage({ data }, sock) {
         const message = JSON.parse(data as string);
+        const inst = DataService.getInstance();
         switch (message?.action) {
-            case ACTIONS.DISCONNECT:
+            case ACTIONS.SUB: {
+                const cb = (tickData: TickData) => {
+                    sock.send(JSON.stringify(tickData));
+                }
+                inst.subscribe(cb);
+                inst.startStreaming(16);
+                break
+            }
+            case ACTIONS.UNSUB:
                 DataService.getInstance().stopStreaming();
+                break
+            case ACTIONS.DISCONNECT:
+                sock.close(1006, 'stream stopped due to close')
                 break
             default:
                 console.log('no handler for', message)
                 break;
         }
     },
-    onClose(_, sock) {
+    onClose() {
         DataService.getInstance().stopStreaming();
-        sock.close(1006, 'stream stopped due to close')
     }
 })))
 
