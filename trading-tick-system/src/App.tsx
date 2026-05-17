@@ -12,6 +12,8 @@ export const App = () => {
   const [isStreaming, setIsStreaming] = useState(false);
   const workerRef = useRef<Worker | null>(null);
   const dataMap = useRef<Map<string, TickData> | null>(new Map());
+  const counterDomRef = useRef<HTMLDivElement>(null);
+  const tickCounterRef = useRef(0);
 
   const handleMessages = useCallback(({ data }: MessageEvent<{ type: keyof typeof MSG_TYPES, payload: string }>) => {
     try {
@@ -23,6 +25,14 @@ export const App = () => {
         }
 
         if(dataMap?.current === null) return;
+
+        // SYNCHRONOUS DOM UPDATE - Show live tick counter
+        tickCounterRef.current++;
+        if (counterDomRef.current) {
+          counterDomRef.current.textContent = `Live Ticks: ${tickCounterRef.current}`;
+          counterDomRef.current.style.backgroundColor = 
+            tickCounterRef.current % 2 === 0 ? '#ccffcc' : '#99ff99';
+        }
 
         dataMap.current.set(payload.symbol, payload);
         
@@ -93,12 +103,17 @@ export const App = () => {
   const handleClear = () => {
     console.log('Clearing ticks');
     setTicks([]);
+    tickCounterRef.current = 0;
+    if (counterDomRef.current) {
+      counterDomRef.current.textContent = 'Live Ticks: 0';
+      counterDomRef.current.style.backgroundColor = '#f0f0f0';
+    }
   };
 
   return (
     <div style={{ padding: '20px', fontFamily: 'Arial, sans-serif' }}>
       <div className='title-header'>
-        <h1>Trading Tick System</h1>
+        <h1>Trading Tick System - Web Worker (RESPONSIVE)</h1>
       </div>
 
       <div style={{ marginBottom: '20px' }}>
@@ -118,6 +133,22 @@ export const App = () => {
           Ticks received: <strong>{ticks.length}</strong>
           {` SubId`}: <strong>{subId}</strong>
         </span>
+      </div>
+
+      <div
+        ref={counterDomRef}
+        style={{
+          padding: '12px',
+          marginBottom: '20px',
+          backgroundColor: '#f0f0f0',
+          borderRadius: '4px',
+          fontSize: '18px',
+          fontWeight: 'bold',
+          color: '#333',
+          transition: 'background-color 0.1s',
+        }}
+      >
+        Live Ticks: 0
       </div>
 
       <div style={{ overflowX: 'auto', maxHeight: '600px', overflowY: 'auto' }}>

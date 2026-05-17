@@ -1,162 +1,90 @@
-// APP_MAIN.tsx
-import { useCallback, useEffect, useRef, useState } from 'react';
+// APP_MAIN.tsx - Main Thread Approach (EXPENSIVE)
+import { useEffect, useRef, useState } from 'react';
 import { TickTable } from './TickTable';
 import type { TickData } from './types';
 import './App.css';
-import { ACTIONS, MSG_TYPES } from './constants';
+import { DataService } from './server/dataService';
 
 export const App = () => {
   const [ticks, setTicks] = useState<TickData[]>([]);
   const [subId, setSubId] = useState<string | null>(null);
-
   const [isStreaming, setIsStreaming] = useState(false);
   const [isConnected, setIsConnected] = useState(false);
 
-  const socketRef = useRef<WebSocket | null>(null);
+  const dataServiceRef = useRef<DataService | null>(null);
   const dataMap = useRef<Map<string, TickData>>(new Map());
+  const counterDomRef = useRef<HTMLDivElement>(null);
+  const tickCounterRef = useRef(0);
 
-  const handleMessages = useCallback(
-    ({ data }: MessageEvent<string>) => {
-      try {
-        const payload = JSON.parse(data) as TickData & {
-          subId?: string;
-        };
-
-        if (payload.subId) {
-          setSubId(payload.subId);
-          return;
-        }
-
-        dataMap.current.set(payload.symbol, payload);
-
-        setTicks(Array.from(dataMap.current.values()));
-      } catch (error) {
-        console.error(error);
-      }
-    },
-    []
-  );
-
-  const connect = useCallback(
-    (url: string) => {
-      const existingSocket = socketRef.current;
-
-      // Prevent duplicate sockets
-      if (
-        existingSocket &&
-        (
-          existingSocket.readyState === WebSocket.OPEN ||
-          existingSocket.readyState === WebSocket.CONNECTING
-        )
-      ) {
-        return;
-      }
-
-      const socket = new WebSocket(url);
-
-      socketRef.current = socket;
-
-      socket.onopen = () => {
-        console.log('Socket connected');
-
-        setIsConnected(true);
-
-        socket.send(
-          JSON.stringify({
-            action: ACTIONS.CONNECT,
-          })
-        );
-      };
-
-      socket.onmessage = handleMessages;
-
-      socket.onerror = (err) => {
-        console.error(MSG_TYPES.ERROR, err);
-      };
-
-      socket.onclose = ({ code, wasClean, reason }) => {
-        console.log(MSG_TYPES.CLOSED, {
-          code,
-          reason,
-          wasClean,
-        });
-
-        setIsConnected(false);
-        setIsStreaming(false);
-        setSubId(null);
-
-        socketRef.current = null;
-      };
-    },
-    [handleMessages]
-  );
-
+  // Initialize DataService on mount
   useEffect(() => {
-    connect('ws://localhost:3000');
+    const service = new DataService();
+    dataServiceRef.current = service;
+    setSubId(service.instanceId);
+    setIsConnected(true);
 
     return () => {
-      const socket = socketRef.current;
-
-      if (
-        socket &&
-        (
-          socket.readyState === WebSocket.OPEN ||
-          socket.readyState === WebSocket.CONNECTING
-        )
-      ) {
-        socket.close(1000, 'closed by client');
+      if (isStreaming) {
+        service.stopStreaming();
       }
-
-      socketRef.current = null;
+      dataServiceRef.current = null;
     };
-  }, [connect]);
+  }, []);
 
   const handleStartStreaming = () => {
-    if (!isConnected) return;
+    if (!dataServiceRef.current) return;
 
-    socketRef.current?.send(
-      JSON.stringify({
-        action: ACTIONS.SUB,
-      })
-    );
+    const service = dataServiceRef.current;
 
+    // Subscribe to ticks from DataService
+    service.subscribe((tick) => {
+      // SYNCHRONOUS DOM UPDATE - This CANNOT be batched and WILL block UI
+      tickCounterRef.current++;
+      if (counterDomRef.current) {
+        counterDomRef.current.textContent = `Live Ticks: ${tickCounterRef.current}`;
+        counterDomRef.current.style.backgroundColor = 
+          tickCounterRef.current % 2 === 0 ? '#ffcccc' : '#ff9999';
+      }
+
+      dataMap.current.set(tick.symbol, tick);
+      setTicks(Array.from(dataMap.current.values()));
+    });
+
+    // Start generating ticks on main thread (EXPENSIVE - will block UI)
+    service.startStreaming(16);
     setIsStreaming(true);
   };
 
   const handleStopStreaming = () => {
-    if (!isConnected) return;
+    if (!dataServiceRef.current) return;
 
-    socketRef.current?.send(
-      JSON.stringify({
-        action: ACTIONS.UNSUB,
-      })
-    );
-
+    dataServiceRef.current.stopStreaming();
     setIsStreaming(false);
   };
 
   const toggleConnection = () => {
-    const socket = socketRef.current;
-
-    if (
-      socket &&
-      (
-        socket.readyState === WebSocket.OPEN ||
-        socket.readyState === WebSocket.CONNECTING
-      )
-    ) {
-      socket.close(1000, 'closed by client');
-      return;
+    if (isConnected) {
+      handleStopStreaming();
+      setIsConnected(false);
+      dataServiceRef.current = null;
+      setSubId(null);
+    } else {
+      const service = new DataService();
+      dataServiceRef.current = service;
+      setSubId(service.instanceId);
+      setIsConnected(true);
     }
-
-    connect('ws://localhost:3000');
   };
 
   const handleClear = () => {
     console.log('Clearing ticks');
-
     dataMap.current.clear();
     setTicks([]);
+    tickCounterRef.current = 0;
+    if (counterDomRef.current) {
+      counterDomRef.current.textContent = 'Live Ticks: 0';
+      counterDomRef.current.style.backgroundColor = '#f0f0f0';
+    }
   };
 
   return (
@@ -167,7 +95,7 @@ export const App = () => {
       }}
     >
       <div className='title-header'>
-        <h1>Trading Tick System</h1>
+        <h1>Trading Tick System - Main Thread (EXPENSIVE)</h1>
       </div>
 
       <div style={{ marginBottom: '20px' }}>
@@ -217,6 +145,22 @@ export const App = () => {
 
           SubId: <strong>{subId ?? 'N/A'}</strong>
         </span>
+      </div>
+
+      <div
+        ref={counterDomRef}
+        style={{
+          padding: '12px',
+          marginBottom: '20px',
+          backgroundColor: '#f0f0f0',
+          borderRadius: '4px',
+          fontSize: '18px',
+          fontWeight: 'bold',
+          color: '#333',
+          transition: 'background-color 0.1s',
+        }}
+      >
+        Live Ticks: 0
       </div>
 
       <div
