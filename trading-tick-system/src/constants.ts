@@ -2,7 +2,8 @@
 export const MSG_TYPES = {
     ERROR: "ERROR",
     CLOSED: "CLOSED",
-    MESSAGE: "MESSAGE"
+    MESSAGE: "MESSAGE",
+    TICK: "TICK"
 } as const
 export const ACTIONS = {
     CONNECT: 'connect',

@@ -1,21 +1,23 @@
 import type { TickData } from '../types';
+import { randomUUID } from 'node:crypto'
 
 /**
  * Mock trading data service that generates realistic live tick data
  */
 
-const generateUUID = (): string => {
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
-    const r = Math.random() * 16 | 0;
-    const v = c === 'x' ? r : (r & 0x3 | 0x8);
-    return v.toString(16);
-  });
-};
+// For browswe
+// const randomUUID = (): string => {
+//   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+//     const r = Math.random() * 16 | 0;
+//     const v = c === 'x' ? r : (r & 0x3 | 0x8);
+//     return v.toString(16);
+//   });
+// };
 
 const SYMBOLS = [
   // Mega-Cap & Technology Leaders
-  "AAPL", "MSFT", "GOOGL", "GOOG", "AMZN", "NVDA", "META", "TSLA", "AVGO", "AMD", 
-  "INTC", "QCOM", "TXN", "AMAT", "LRCX", "ADI", "MU", "PANW", "FTNT", "CRWD", 
+  "AAPL", "MSFT", "GOOGL", "GOOG", "AMZN", "NVDA", "META", "TSLA", "AVGO", "AMD",
+  "INTC", "QCOM", "TXN", "AMAT", "LRCX", "ADI", "MU", "PANW", "FTNT", "CRWD",
   "CSCO", "ORCL", "ADBE", "CRM", "INTU", "SNPS", "CDNS", "WDAY", "TEAM", "DDOG",
 
   // E-Commerce, Digital Media & Services
@@ -31,7 +33,7 @@ const SYMBOLS = [
   "TSCO", "LULU", "ROST", "DLTR", "DG", "ULTA", "HAS", "MAT", "CROX", "NKE",
 
   // Industrials, Logistics & Semiconductors
-  "HON", "LMT", "GE", "AAL", "UAL", "DAL", "LUV", "FAST", "ODFL", "CSX", 
+  "HON", "LMT", "GE", "AAL", "UAL", "DAL", "LUV", "FAST", "ODFL", "CSX",
   "NSC", "UNP", "JBHT", "EXPD", "CHRW", "PCAR", "CUMM", "DE", "CAT", "NXPI",
 
   // Major Index Tracking ETFs & Funds
@@ -74,7 +76,7 @@ export class DataService {
   constructor() {
     this.priceStates = new Map();
     this.initializePrices();
-    this.instanceId = generateUUID();
+    this.instanceId = randomUUID();
   }
 
   static getInstance = (): DataService => {
@@ -127,7 +129,6 @@ export class DataService {
     }
 
     // EXPENSIVE CALCULATIONS
-    const indicators = this.calculateIndicators(state);
 
     const change = state.currentPrice - state.basePrice;
 

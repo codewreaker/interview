@@ -2,6 +2,8 @@
  * Core types for the trading tick system
  */
 
+import type { MSG_TYPES } from "./constants";
+
 export interface TickData {
   symbol: string;
   price: number;
@@ -14,15 +16,8 @@ export interface TickData {
 }
 
 export interface BufferEvent {
-  type: 'tick' | 'flush' | 'schedule';
-  data?: TickData[];
-  timestamp: number;
-}
-
-export interface SchedulerConfig {
-  flushInterval: number; // ms
-  maxBufferSize: number; // max ticks before forced flush
-  batchSize: number; // ticks per batch
+  type: keyof typeof MSG_TYPES;
+  payload: unknown;
 }
 
 export interface FlusherStats {
@@ -30,5 +25,4 @@ export interface FlusherStats {
   flushCount: number;
   lastFlushTime: number;
   averageFlushSize: number;
-  bufferUtilization: number;
 }

@@ -38,7 +38,8 @@ app.get('/', upgradeWebSocket(() => ({
                     sock.send(JSON.stringify(tickData));
                 }
                 inst.subscribe(cb);
-                inst.startStreaming(16);
+                console.log('SUBDATA', typeof message?.payload, message?.payload);
+                inst.startStreaming(message?.payload || 16);
                 break
             }
             case ACTIONS.UNSUB:

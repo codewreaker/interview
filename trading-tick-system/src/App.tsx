@@ -11,7 +11,7 @@ export const App = () => {
   const [subId, setSubId] = useState<string | null>(null);
   const [isStreaming, setIsStreaming] = useState(false);
   const workerRef = useRef<Worker | null>(null);
-  const dataMap = useRef<Map<string, TickData> | null>(new Map());
+  //const dataMap = useRef<Map<string, TickData> | null>(new Map());
   const counterDomRef = useRef<HTMLDivElement>(null);
   const tickCounterRef = useRef(0);
 
@@ -23,21 +23,19 @@ export const App = () => {
           setSubId(payload.subId);
           return
         }
-
-        if(dataMap?.current === null) return;
-
+        return
+      }
+      if (data.type === MSG_TYPES.TICK) {
         // SYNCHRONOUS DOM UPDATE - Show live tick counter
         tickCounterRef.current++;
         if (counterDomRef.current) {
           counterDomRef.current.textContent = `Live Ticks: ${tickCounterRef.current}`;
-          counterDomRef.current.style.backgroundColor = 
+          counterDomRef.current.style.backgroundColor =
             tickCounterRef.current % 2 === 0 ? '#ccffcc' : '#99ff99';
         }
 
-        dataMap.current.set(payload.symbol, payload);
-        
-        setTicks(Array.from(dataMap.current.values()))
-      } 
+        setTicks(data.payload as unknown as TickData[]);
+      }
     } catch (error) {
       console.error(error)
     }
@@ -72,7 +70,8 @@ export const App = () => {
     // implement
     setIsStreaming(() => {
       workerRef.current?.postMessage({
-        action: ACTIONS.SUB
+        action: ACTIONS.SUB,
+        payload: 16
       });
       return true
     });
@@ -127,9 +126,9 @@ export const App = () => {
           Clear
         </button>
         <button onClick={toggleConnection} style={{ marginLeft: '10px', backgroundColor: 'red' }}>
-          {subId ? 'DISCONNECT':'CONNECT'}
+          {subId ? 'DISCONNECT' : 'CONNECT'}
         </button>
-        <span style={{ marginLeft: '20px'}}>
+        <span style={{ marginLeft: '20px' }}>
           Ticks received: <strong>{ticks.length}</strong>
           {` SubId`}: <strong>{subId}</strong>
         </span>
